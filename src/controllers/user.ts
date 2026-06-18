@@ -1,5 +1,5 @@
-import express from "express"
-import { UserSchema } from "../zod/user.js"
+import express, {type Response,type Request}from "express"
+import { UserSchema, sendOTP, resendOTP } from "../zod/index.js"
 import { prisma } from "../utils/database/db.js"
 import bcrypt from "bcryptjs"
 import nodemailer from "nodemailer";
@@ -36,7 +36,7 @@ async function sendWelcomeEmail(to: string, name: string) {
   })
 };
 
-const signup = async (req: any, res: any) => {
+const signup = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body;
         const response = await UserSchema.safeParseAsync({ name, email, password })
@@ -58,7 +58,17 @@ const signup = async (req: any, res: any) => {
         })
 
         if (pendingVerification) {
-            return res.status(409).json({ error: "OTP already sent. Please check your email." })
+            if(new Date() < pendingVerification.expiredAt){
+                return res.status(409).json({ error: "OTP already sent. Please check your email." })
+            }
+
+            // resend otp, when it get expired
+            // uske liye pahle wala delete to kare
+            await prisma.oTPVerification.delete({
+                where: {
+                    email : response.data.email
+                }
+            })
         }
 
         const hashedPassword = await bcrypt.hash(response.data.password, 12);
@@ -84,13 +94,76 @@ const signup = async (req: any, res: any) => {
         return res.status(500).json({ error: "Internal server error" })
     }
 }
-const otpValdation = async (req: any, res: any) => {
+
+const resendOtp = async(req: Request, res : Response)=>{
+    try {
+        const {email} = req.body;
+        const response = await resendOTP.safeParseAsync({email});
+        if(!response.success){
+            return res.status(400).json({"error": "Enter valid email"})
+        };
+
+        const userExist = await prisma.oTPVerification.findUnique({
+            where : {
+                email
+            }
+        });
+        if(!userExist){
+            return res.status(404).json({
+                "error" : "Email not found"
+            })
+        };
+
+        if(new Date() < userExist.expiredAt){
+            return res.status(400).json({
+                "error" : "OTP is still valid. Please check your email."
+            })
+        }
+
+        // new OTP + new Expiry
+        const newOTP = Math.floor(100000+ Math.random() * 900000);
+        const newExpiry = new Date(Date.now() + 10*60*1000);
+
+        await prisma.oTPVerification.update({
+            where:{
+                email
+            },
+            data: {
+                otp: newOTP,
+                expiredAt: newExpiry
+            }
+        });
+        // email, name, otp
+        await sendOtpEmail(email, userExist.name, newOTP.toString());
+
+        return res.status(200).json({
+            "message" : "New OTP sent successfully."
+        })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            "error" : "Internal Server Error"
+        });
+    }
+}
+
+const otpValdation = async (req: Request, res: Response) => {
     try {
         const { otp, email } = req.body;
 
         if (!otp) {
-            return res.json({ error: "OTP not requested for this email" })
+            return res.status(400).json({ error: "OTP not requested for this email" })
         }
+        // validate the enter user's data
+        const response =  await sendOTP.safeParseAsync({
+            otp, email
+        });
+        if(!response.success){
+            return res.status(400).json({
+                "error" : "Enter Valid Input"
+            })
+        };
 
         const record = await prisma.oTPVerification.findUnique({
             where: {
@@ -119,7 +192,7 @@ const otpValdation = async (req: any, res: any) => {
         });
         await prisma.oTPVerification.delete({ where: { email } });
         await sendWelcomeEmail(email, record.name);
-        return res.json({ "message": "user created successfully" });
+        return res.status(201).json({ "message": "user created successfully" });
 
     } catch (error) {
         console.error(error)
@@ -127,7 +200,7 @@ const otpValdation = async (req: any, res: any) => {
     }
 }
 
-const login = async (req: any, res: any) => {
+const login = async (req: Request, res: Response) => {
     try {
         console.log("login");
     } catch (error) {
@@ -136,10 +209,10 @@ const login = async (req: any, res: any) => {
     }
 };
 
-const logout = async (req: any, res: any) => {
+const logout = async (req: Request, res: Response) => {
     return res.json({
         "page": "logout page"
     });
 };
 
-export { otpValdation, signup, login, logout }
+export {resendOtp, otpValdation, signup, login, logout }
