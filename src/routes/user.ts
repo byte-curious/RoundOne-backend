@@ -1,10 +1,10 @@
 import express from "express"
-import {resendOtp, otpValdation, login, logout, signup } from "../controllers/user.js"
+import {resendOtp, otpValidation, login, logout, signup } from "../controllers/user.js"
 
 const userRouter = express.Router();
 
 userRouter.post("/signup", signup);
-userRouter.post("/verify-otp", otpValdation);
+userRouter.post("/verify-otp", otpValidation);
 userRouter.post("/resent-otp", resendOtp);
 userRouter.post("/login", login);
 userRouter.get("/logout", logout)

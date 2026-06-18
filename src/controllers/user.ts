@@ -1,10 +1,11 @@
-import express, {type Response,type Request}from "express"
-import { UserSchema, sendOTP, resendOTP } from "../zod/index.js"
+import express, { type Response, type Request } from "express"
+import { UserSchema, sendOTP, resendOTP, LoginSchema } from "../zod/index.js"
 import { prisma } from "../utils/database/db.js"
 import bcrypt from "bcryptjs"
 import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
+import jwt from "jsonwebtoken";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -24,16 +25,16 @@ async function sendOtpEmail(to: string, name: string, otp: string) {
     });
 };
 async function sendWelcomeEmail(to: string, name: string) {
-  const { subject, html, text } = generateWelcomeEmailTemplate({
-    recipientName: name
-  })
-  await transporter.sendMail({
-    from: '"RoundOne" <no-reply@roundone.com>',
-    to,
-    subject,
-    html,
-    text,
-  })
+    const { subject, html, text } = generateWelcomeEmailTemplate({
+        recipientName: name
+    })
+    await transporter.sendMail({
+        from: '"RoundOne" <no-reply@roundone.com>',
+        to,
+        subject,
+        html,
+        text,
+    })
 };
 
 const signup = async (req: Request, res: Response) => {
@@ -58,7 +59,7 @@ const signup = async (req: Request, res: Response) => {
         })
 
         if (pendingVerification) {
-            if(new Date() < pendingVerification.expiredAt){
+            if (new Date() < pendingVerification.expiredAt) {
                 return res.status(409).json({ error: "OTP already sent. Please check your email." })
             }
 
@@ -66,7 +67,7 @@ const signup = async (req: Request, res: Response) => {
             // uske liye pahle wala delete to kare
             await prisma.oTPVerification.delete({
                 where: {
-                    email : response.data.email
+                    email: response.data.email
                 }
             })
         }
@@ -95,37 +96,37 @@ const signup = async (req: Request, res: Response) => {
     }
 }
 
-const resendOtp = async(req: Request, res : Response)=>{
+const resendOtp = async (req: Request, res: Response) => {
     try {
-        const {email} = req.body;
-        const response = await resendOTP.safeParseAsync({email});
-        if(!response.success){
-            return res.status(400).json({"error": "Enter valid email"})
+        const { email } = req.body;
+        const response = await resendOTP.safeParseAsync({ email });
+        if (!response.success) {
+            return res.status(400).json({ "error": "Enter valid email" })
         };
 
         const userExist = await prisma.oTPVerification.findUnique({
-            where : {
+            where: {
                 email
             }
         });
-        if(!userExist){
+        if (!userExist) {
             return res.status(404).json({
-                "error" : "Email not found"
+                "error": "Email not found"
             })
         };
 
-        if(new Date() < userExist.expiredAt){
+        if (new Date() < userExist.expiredAt) {
             return res.status(400).json({
-                "error" : "OTP is still valid. Please check your email."
+                "error": "OTP is still valid. Please check your email."
             })
         }
 
         // new OTP + new Expiry
-        const newOTP = Math.floor(100000+ Math.random() * 900000);
-        const newExpiry = new Date(Date.now() + 10*60*1000);
+        const newOTP = Math.floor(100000 + Math.random() * 900000);
+        const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
         await prisma.oTPVerification.update({
-            where:{
+            where: {
                 email
             },
             data: {
@@ -137,31 +138,31 @@ const resendOtp = async(req: Request, res : Response)=>{
         await sendOtpEmail(email, userExist.name, newOTP.toString());
 
         return res.status(200).json({
-            "message" : "New OTP sent successfully."
+            "message": "New OTP sent successfully."
         })
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-            "error" : "Internal Server Error"
+            "error": "Internal Server Error"
         });
     }
 }
 
-const otpValdation = async (req: Request, res: Response) => {
+const otpValidation = async (req: Request, res: Response) => {
     try {
         const { otp, email } = req.body;
 
         if (!otp) {
-            return res.status(400).json({ error: "OTP not requested for this email" })
+            return res.status(400).json({ error: "OTP is required" })
         }
         // validate the enter user's data
-        const response =  await sendOTP.safeParseAsync({
+        const response = await sendOTP.safeParseAsync({
             otp, email
         });
-        if(!response.success){
+        if (!response.success) {
             return res.status(400).json({
-                "error" : "Enter Valid Input"
+                "error": "Enter Valid Input"
             })
         };
 
@@ -183,26 +184,74 @@ const otpValdation = async (req: Request, res: Response) => {
         }
 
         // now yaha pe create karenge user and delete karenge otp record
-        await prisma.user.create({
-            data: {
-                name: record.name,
-                email,
-                password: record.password
-            }
-        });
-        await prisma.oTPVerification.delete({ where: { email } });
+        // user transaction to maintain the proper flow 
+        // transaction to prevent the consistency 
+        await prisma.$transaction([
+            prisma.user.create({
+                data: {
+                    name: record.name,
+                    email,
+                    password: record.password
+                }
+            }),
+            prisma.oTPVerification.delete({ where: { email } })
+        ])
+
         await sendWelcomeEmail(email, record.name);
         return res.status(201).json({ "message": "user created successfully" });
 
     } catch (error) {
         console.error(error)
-        return res.status(500).json({ error: "Internal server error"})
+        return res.status(500).json({ error: "Internal server error" })
     }
 }
 
 const login = async (req: Request, res: Response) => {
     try {
-        console.log("login");
+        const { email, password } = req.body;
+        const response = await LoginSchema.safeParseAsync({ email, password });
+        if (!response.success) {
+            return res.status(400).json({ "error": response.error })
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
+        if (!user) {
+            return res.status(404).json({ "error": "Invalid Credential" });
+        };
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            return res.status(401).json({ "error": "Invalid Credential" });
+        }
+
+        // jwt token -> set to cookies
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            return res.status(500).json({
+                error: "Server configuration error"
+            });
+        }
+
+        // console.log(secret);
+        const payload = {
+            id: user.id,
+        }
+        const jwtExpiry = 60 * 60 * 24 * 7
+        const generateJWT = jwt.sign(payload, secret, {
+            expiresIn: jwtExpiry
+        });
+        // set cookie to http-only 
+        res.cookie("token", generateJWT, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: jwtExpiry * 1000
+        })
+        return res.status(200).json({
+            "message": "Login Successfully"
+        });
+
     } catch (error) {
         console.error(error)
         return res.status(500).json({ error: "Internal server error" })
@@ -210,9 +259,14 @@ const login = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-    return res.json({
-        "page": "logout page"
-    });
+    try {
+        res.clearCookie("token");
+        return res.status(200).json({ "message": "Logout successfully" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal server error" })
+    }
 };
 
-export {resendOtp, otpValdation, signup, login, logout }
+export { resendOtp, otpValidation, signup, login, logout }

@@ -13,5 +13,11 @@ const sendOTP = z.object({
 
 const resendOTP = z.object({
     email : z.string().email()
-})
-export {sendOTP, resendOTP, UserSchema}
+});
+
+const LoginSchema = z.object({
+    email : z.string().email(),
+    password: z.string()
+});
+
+export {sendOTP, resendOTP, UserSchema, LoginSchema}
