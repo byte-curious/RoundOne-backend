@@ -3,13 +3,14 @@ import express from "express"
 import cors from "cors"
 import {userRouter} from "./routes/user.js"
 import cookieParser from "cookie-parser";
+import {resumeRouter} from "./routes/resume.js"
 
 const app =  express()
 const PORT = process.env.PORT || 3000
 app.use(cors());
 // express.json is used to parse the requesting body
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 
 
 app.get("/", (req, res)=>{
@@ -19,6 +20,6 @@ app.get("/", (req, res)=>{
 });
 
 app.use("/user", userRouter);
-
+app.use("/resume", resumeRouter)
 
 app.listen(PORT, ()=> console.log("server is running", PORT))

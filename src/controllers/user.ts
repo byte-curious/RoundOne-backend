@@ -39,7 +39,7 @@ async function sendWelcomeEmail(to: string, name: string) {
 
 const signup = async (req: Request, res: Response) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password } =  req.body;
         const response = await UserSchema.safeParseAsync({ name, email, password })
 
         if (!response.success) {
@@ -218,7 +218,7 @@ const login = async (req: Request, res: Response) => {
             where: { email }
         });
         if (!user) {
-            return res.status(404).json({ "error": "Invalid Credential" });
+            return res.status(401).json({ "error": "Invalid Credential" });
         };
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
