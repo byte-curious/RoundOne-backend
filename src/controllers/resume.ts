@@ -14,6 +14,8 @@ coudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY!,
     api_secret: process.env.CLOUDINARY_API_SECRET!
 });
+
+
 const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
     return new Promise((resolve, reject) => {
         const stream = coudinary.uploader.upload_stream(
@@ -26,19 +28,7 @@ const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
         stream.end(buffer)
     });
 };
-/*
-POST /upload-resume (protected)
-  → check req.file exists → 400 if not
-  → upload buffer to Cloudinary
-  → pdf-parse extracts text from buffer
-  → check extractedText length → 400 if too short
-  → check if user already has a resume in DB
-      → if yes → update existing record
-      → if no  → create new record
-  → save { userId, publicId, fileUrl, 
-           extractedText, originalName } to DB
-  → return 200 { message: "Resume uploaded successfully" }
-*/
+
 const uploadResume = async (req: Request, res: Response) => {
     try {
         const file = req.file;
