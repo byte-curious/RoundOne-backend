@@ -4,6 +4,7 @@ import cors from "cors"
 import {userRouter} from "./routes/user.js"
 import cookieParser from "cookie-parser";
 import {resumeRouter} from "./routes/resume.js"
+import {interviewRouter} from "./routes/interview.js";
 
 const app =  express()
 const PORT = process.env.PORT || 3000
@@ -21,5 +22,5 @@ app.get("/", (req, res)=>{
 
 app.use("/user", userRouter);
 app.use("/resume", resumeRouter)
-
+app.use("/interview", interviewRouter)
 app.listen(PORT, ()=> console.log("server is running", PORT))
