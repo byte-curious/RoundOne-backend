@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
     await transporter.sendMail({
-        from: '"RoundOne" <no-reply@roundone.com>',
+        from: '"RoundOne"  <${process.env.SMTP_USER}',
         to,
         subject,
         html,
@@ -29,7 +29,7 @@ async function sendWelcomeEmail(to: string, name: string) {
         recipientName: name
     })
     await transporter.sendMail({
-        from: '"RoundOne" <no-reply@roundone.com>',
+        from: '"RoundOne"  <${process.env.SMTP_USER}',
         to,
         subject,
         html,
@@ -39,11 +39,11 @@ async function sendWelcomeEmail(to: string, name: string) {
 
 const signup = async (req: Request, res: Response) => {
     try {
-        const { name, email, password } =  req.body;
+        const { name, email, password } = req.body;
         const response = await UserSchema.safeParseAsync({ name, email, password })
 
         if (!response.success) {
-            return res.status(400).json({ "error": response.error })
+            return res.status(400).json({ "error": response?.error?.issues[0]?.message })
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -249,7 +249,11 @@ const login = async (req: Request, res: Response) => {
             maxAge: jwtExpiry * 1000
         })
         return res.status(200).json({
-            "message": "Login Successfully"
+            "message": "Login Successfully", user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
         });
 
     } catch (error) {
