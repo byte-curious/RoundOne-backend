@@ -2,7 +2,7 @@ import express, { type Response, type Request } from "express"
 import { UserSchema, sendOTP, resendOTP, LoginSchema } from "../zod/index.js"
 import { prisma } from "../utils/database/db.js"
 import bcrypt from "bcryptjs"
-import nodemailer from "nodemailer";
+// import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
 import jwt from "jsonwebtoken";
@@ -10,15 +10,15 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-})
+// const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 587,
+//     secure: false,
+//     auth: {
+//         user: process.env.SMTP_USER,
+//         pass: process.env.SMTP_PASS
+//     }
+// })
 
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
@@ -80,7 +80,7 @@ const signup = async (req: Request, res: Response) => {
 
         const hashedPassword = await bcrypt.hash(response.data.password, 12);
         const generateOTP = Math.floor(100000 + Math.random() * 900000);
-        const expiredAt = new Date(Date.now() + 10 * 60 * 1000) // 10-minute
+        const expiredAt = new Date(Date.now() + 1 * 60 * 1000) // 10-minute
 
         await prisma.oTPVerification.create({
             data: {
@@ -129,7 +129,7 @@ const resendOtp = async (req: Request, res: Response) => {
 
         // new OTP + new Expiry
         const newOTP = Math.floor(100000 + Math.random() * 900000);
-        const newExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        const newExpiry = new Date(Date.now() + 1 * 60 * 1000);
 
         await prisma.oTPVerification.update({
             where: {

@@ -23,8 +23,8 @@ const BRAND_COLOR_DARK = "#3730A3";
 export function generateOtpEmailTemplate({
   otp,
   recipientName = "there",
-  expiryMinutes = 10,
-  supportEmail = "support@roundone.com",
+  expiryMinutes = 1,
+  supportEmail = "roundone.connect@gmail.com",
 }: OtpEmailOptions): OtpEmailTemplate {
   const subject = `Your ${PLATFORM_NAME} verification code: ${otp}`;
 
