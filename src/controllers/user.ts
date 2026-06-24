@@ -6,37 +6,40 @@ import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
 import jwt from "jsonwebtoken";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    }
 })
 
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
-    await transporter.sendMail({
-        from: `"RoundOne" <${process.env.SMTP_USER}>`,
+    await resend.emails.send({
+        from: "RoundOne <onboarding@resend.dev>",
         to,
         subject,
         html,
-        text,
+        text
     });
 };
 async function sendWelcomeEmail(to: string, name: string) {
     const { subject, html, text } = generateWelcomeEmailTemplate({
         recipientName: name
     })
-    await transporter.sendMail({
-        from: '"RoundOne"  <${process.env.SMTP_USER}',
+    await resend.emails.send({
+        from: "RoundOne <onboarding@resend.dev>",
         to,
         subject,
         html,
-        text,
+        text
     })
 };
 
