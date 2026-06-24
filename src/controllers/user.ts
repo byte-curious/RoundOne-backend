@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
     await transporter.sendMail({
-        from: '"RoundOne"  <${process.env.SMTP_USER}',
+        from: `"RoundOne" <${process.env.SMTP_USER}>`,
         to,
         subject,
         html,
@@ -244,8 +244,8 @@ const login = async (req: Request, res: Response) => {
         // set cookie to http-only 
         res.cookie("token", generateJWT, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             maxAge: jwtExpiry * 1000
         })
         return res.status(200).json({
@@ -264,7 +264,11 @@ const login = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
     try {
-        res.clearCookie("token");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        });
         return res.status(200).json({ "message": "Logout successfully" });
 
     } catch (error) {
