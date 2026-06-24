@@ -1,3 +1,5 @@
+const seed = Math.random().toString(36).substring(2, 8);
+
 interface DSAPromptInput {
 company: string;
 level: "beginner" | "intermediate" | "advanced";
@@ -244,5 +246,7 @@ No markdown.
 No code fences.
 No explanations.
 Return ONLY the raw JSON object starting with { and ending with }.
+
+Session seed (ignore this, just ensures variety): ${seed}
 `;
 };

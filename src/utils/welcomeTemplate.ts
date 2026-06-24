@@ -1,7 +1,3 @@
-/**
- * welcomeTemplate.ts
- * Welcome email template for RoundOne.
- */
 
 export interface WelcomeEmailOptions {
   recipientName: string
@@ -109,8 +105,8 @@ Need help? Contact us at ${supportEmail}
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center">
-                    <a href="https://roundone.com/onboarding"
+                  <td align="center"> 
+                    <a href="https://round-one-frontend.vercel.app/onboarding"
                        style="display:inline-block;background-color:${BRAND_COLOR};color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:8px;">
                       Start Your First Mock Interview →
                     </a>

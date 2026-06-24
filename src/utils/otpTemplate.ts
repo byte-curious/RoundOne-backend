@@ -1,12 +1,4 @@
-/**
- * template.ts
- * OTP verification email template for RoundOne.
- *
- * Generates the subject, HTML, and plain-text versions of an OTP email.
- * Plug the output into any mailer (Nodemailer, SendGrid, Resend, etc.) —
- * see the usage example at the bottom of this file.
- */
-
+ 
 export interface OtpEmailOptions {
   /** The one-time password to display (e.g. "482913") */
   otp: string;

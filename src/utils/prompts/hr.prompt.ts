@@ -1,3 +1,5 @@
+const seed = Math.random().toString(36).substring(2, 8);
+
 interface HRPromptInput {
   name: string;
   resumeText: string;
@@ -114,5 +116,7 @@ Additional Validation:
 
 No markdown, no code fences, no explanation.
 Return ONLY the raw JSON object starting with { and ending with }
+
+Session seed (ignore this, just ensures variety): ${seed}
 `;
 };
