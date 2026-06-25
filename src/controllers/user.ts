@@ -14,11 +14,57 @@ const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
+    family: 4,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
     }
 })
+
+// third try to send otp on render
+// --- BREVO EMAIL SETUP START ---
+
+// async function sendEmailViaBrevo(to: string, name: string, subject: string, html: string, text: string) {
+//     const url = "https://api.brevo.com/v3/smtp/email";
+    
+//     // SENDER_EMAIL must be the email you used to sign up for Brevo
+//     const senderEmail = process.env.SENDER_EMAIL; 
+//     const apiKey = process.env.BREVO_API_KEY;
+
+//     if (!senderEmail || !apiKey) {
+//         console.error("Missing Brevo credentials in Environment Variables");
+//         return;
+//     }
+
+//     const payload = {
+//         sender: { name: "RoundOne", email: senderEmail },
+//         to: [{ email: to, name: name }],
+//         subject: subject,
+//         htmlContent: html,
+//         textContent: text
+//     };
+
+//     try {
+//         const response = await fetch(url, {
+//             method: "POST",
+//             headers: {
+//                 "accept": "application/json",
+//                 "api-key": apiKey,
+//                 "content-type": "application/json"
+//             },
+//             body: JSON.stringify(payload)
+//         });
+
+//         if (!response.ok) {
+//             const errorData = await response.json();
+//             console.error("Brevo API Error:", JSON.stringify(errorData));
+//         } else {
+//             console.log(`Email successfully sent to ${to}`);
+//         }
+//     } catch (error) {
+//         console.error("Failed to send email via Brevo API:", error);
+//     }
+// }
 
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
@@ -36,6 +82,7 @@ async function sendOtpEmail(to: string, name: string, otp: string) {
         html,
         text,
     });
+    // await sendEmailViaBrevo(to, name, subject, html, text);
 
 };
 async function sendWelcomeEmail(to: string, name: string) {
@@ -50,12 +97,13 @@ async function sendWelcomeEmail(to: string, name: string) {
     //     text
     // });
      await transporter.sendMail({
-        from: '"RoundOne"  <${process.env.SMTP_USER}',
+        from: `"RoundOne"  <${process.env.SMTP_USER}>`,
         to,
         subject,
         html,
         text,
     })
+    // await sendEmailViaBrevo(to, name, subject, html, text);
 };
 
 const signup = async (req: Request, res: Response) => {
