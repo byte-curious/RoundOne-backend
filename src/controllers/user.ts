@@ -1,70 +1,72 @@
-import express, { type Response, type Request } from "express"
+import { type Response, type Request } from "express"
 import { UserSchema, sendOTP, resendOTP, LoginSchema } from "../zod/index.js"
 import { prisma } from "../utils/database/db.js"
 import bcrypt from "bcryptjs"
-import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
 import jwt from "jsonwebtoken";
+
 // import { Resend } from "resend";
+// import nodemailer from "nodemailer";
 
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    family: 4,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-} as any)
+// const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 465,
+//     secure: true,
+//     family: 4,
+//     auth: {
+//         user: process.env.SMTP_USER,
+//         pass: process.env.SMTP_PASS
+//     }
+// } as any)
 
 // third try to send otp on render
 // --- BREVO EMAIL SETUP START ---
 
-// async function sendEmailViaBrevo(to: string, name: string, subject: string, html: string, text: string) {
-//     const url = "https://api.brevo.com/v3/smtp/email";
+async function sendEmailViaBrevo(to: string, name: string, subject: string, html: string, text: string) {
+    const url = "https://api.brevo.com/v3/smtp/email";
     
-//     // SENDER_EMAIL must be the email you used to sign up for Brevo
-//     const senderEmail = process.env.SENDER_EMAIL; 
-//     const apiKey = process.env.BREVO_API_KEY;
+    // SENDER_EMAIL must be the email you used to sign up for Brevo
+    const senderEmail = process.env.SENDER_EMAIL; 
+    const apiKey = process.env.BREVO_API_KEY;
 
-//     if (!senderEmail || !apiKey) {
-//         console.error("Missing Brevo credentials in Environment Variables");
-//         return;
-//     }
+    if (!senderEmail || !apiKey) {
+        console.error("Missing Brevo credentials in Environment Variables");
+        return;
+    }
 
-//     const payload = {
-//         sender: { name: "RoundOne", email: senderEmail },
-//         to: [{ email: to, name: name }],
-//         subject: subject,
-//         htmlContent: html,
-//         textContent: text
-//     };
+    const payload = {
+        sender: { name: "RoundOne", email: senderEmail },
+        to: [{ email: to, name: name }],
+        subject: subject,
+        htmlContent: html,
+        textContent: text
+    };
 
-//     try {
-//         const response = await fetch(url, {
-//             method: "POST",
-//             headers: {
-//                 "accept": "application/json",
-//                 "api-key": apiKey,
-//                 "content-type": "application/json"
-//             },
-//             body: JSON.stringify(payload)
-//         });
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "api-key": apiKey,
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
 
-//         if (!response.ok) {
-//             const errorData = await response.json();
-//             console.error("Brevo API Error:", JSON.stringify(errorData));
-//         } else {
-//             console.log(`Email successfully sent to ${to}`);
-//         }
-//     } catch (error) {
-//         console.error("Failed to send email via Brevo API:", error);
-//     }
-// }
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Brevo API Error:", JSON.stringify(errorData));
+        } 
+        // else {
+        //     console.log(`Email successfully sent to ${to}`);
+        // }
+    } catch (error) {
+        console.error("Failed to send email via Brevo API:", error);
+    }
+}
 
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
@@ -75,14 +77,14 @@ async function sendOtpEmail(to: string, name: string, otp: string) {
     //     html,
     //     text
     // });
-    await transporter.sendMail({
-        from: `"RoundOne" <${process.env.SMTP_USER}>`,
-         to,
-        subject,
-        html,
-        text,
-    });
-    // await sendEmailViaBrevo(to, name, subject, html, text);
+    // await transporter.sendMail({
+    //     from: `"RoundOne" <${process.env.SMTP_USER}>`,
+    //      to,
+    //     subject,
+    //     html,
+    //     text,
+    // });
+    await sendEmailViaBrevo(to, name, subject, html, text);
 
 };
 async function sendWelcomeEmail(to: string, name: string) {
@@ -96,14 +98,14 @@ async function sendWelcomeEmail(to: string, name: string) {
     //     html,
     //     text
     // });
-     await transporter.sendMail({
-        from: `"RoundOne"  <${process.env.SMTP_USER}>`,
-        to,
-        subject,
-        html,
-        text,
-    })
-    // await sendEmailViaBrevo(to, name, subject, html, text);
+    //  await transporter.sendMail({
+    //     from: `"RoundOne"  <${process.env.SMTP_USER}>`,
+    //     to,
+    //     subject,
+    //     html,
+    //     text,
+    // })
+    await sendEmailViaBrevo(to, name, subject, html, text);
 };
 
 const signup = async (req: Request, res: Response) => {
