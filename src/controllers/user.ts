@@ -2,44 +2,59 @@ import express, { type Response, type Request } from "express"
 import { UserSchema, sendOTP, resendOTP, LoginSchema } from "../zod/index.js"
 import { prisma } from "../utils/database/db.js"
 import bcrypt from "bcryptjs"
-// import nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
 import jwt from "jsonwebtoken";
-import { Resend } from "resend";
+// import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-// const transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",
-//     port: 587,
-//     secure: false,
-//     auth: {
-//         user: process.env.SMTP_USER,
-//         pass: process.env.SMTP_PASS
-//     }
-// })
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    }
+})
 
 async function sendOtpEmail(to: string, name: string, otp: string) {
     const { subject, html, text } = generateOtpEmailTemplate({ otp, recipientName: name });
-    await resend.emails.send({
-        from: "RoundOne <onboarding@resend.dev>",
-        to,
+    // await resend.emails.send({
+    //     from: "RoundOne <onboarding@resend.dev>",
+    //     to,
+    //     subject,
+    //     html,
+    //     text
+    // });
+    await transporter.sendMail({
+        from: `"RoundOne" <${process.env.SMTP_USER}>`,
+         to,
         subject,
         html,
-        text
+        text,
     });
+
 };
 async function sendWelcomeEmail(to: string, name: string) {
     const { subject, html, text } = generateWelcomeEmailTemplate({
         recipientName: name
     })
-    await resend.emails.send({
-        from: "RoundOne <onboarding@resend.dev>",
+    // await resend.emails.send({
+    //     from: "RoundOne <onboarding@resend.dev>",
+    //     to,
+    //     subject,
+    //     html,
+    //     text
+    // });
+     await transporter.sendMail({
+        from: '"RoundOne"  <${process.env.SMTP_USER}',
         to,
         subject,
         html,
-        text
+        text,
     })
 };
 
