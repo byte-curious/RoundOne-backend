@@ -1,4 +1,4 @@
-import { executeCode } from "../controllers/code";
+import { executeCode } from "../controllers/code.js";
 import { Router } from "express";
 import {auth} from "../middleware/auth.middleware.js"
 

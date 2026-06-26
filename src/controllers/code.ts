@@ -1,24 +1,31 @@
-import { type Request, type Response } from "express"
-import { runCode } from "../services/piston.service.js";
+import type { Request, Response } from "express";
+import { runCode } from "../services/joodle.service.js"; 
 
+// Helper function to prevent hitting JDoodle's rate limits too fast
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const executeCode = async (req: Request, res: Response) => {
+export const executeCode = async (req: Request, res: Response) => {
     try {
-        const { code, language, testCases } = req.body;
-        if (!code || !language || !testCases || !Array.isArray(testCases)) {
-            return res.status(400).json({ "error": "Missing required Fields" });
-        };
+        const { language, code, testCases } = req.body;
 
-        const results = []
+        if (!language || !code || !testCases || !Array.isArray(testCases)) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const results = [];
         let allPassed = true;
+
         for (let i = 0; i < testCases.length; i++) {
             let { input, output: expectedOutput } = testCases[i];
 
+            // 1. Call JDoodle
             const runningUserCode = await runCode(language, code, input);
 
             if (!runningUserCode) {
                 return res.status(500).json({ error: "Code execution service unavailable" });
-            };
+            }
+
+            // 2. Handle Errors
             if (runningUserCode.status === "error" || runningUserCode.stderr) {
                 results.push({
                     testCase: i + 1,
@@ -30,11 +37,13 @@ const executeCode = async (req: Request, res: Response) => {
                 });
                 allPassed = false;
                 continue;
-            };
+            }
 
+            // 3. Compare Output
             const actualOutput = runningUserCode.stdout.trim();
             const expected = expectedOutput.trim();
             const passed = actualOutput === expected;
+            
             if (!passed) allPassed = false;
 
             results.push({
@@ -45,6 +54,11 @@ const executeCode = async (req: Request, res: Response) => {
                 actualOutput,
                 error: false
             });
+
+            // Wait 500ms between test cases to respect API limits
+            if (i < testCases.length - 1) {
+                await sleep(500);
+            }
         }
 
         return res.status(200).json({
@@ -57,5 +71,3 @@ const executeCode = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
-
-export { executeCode }

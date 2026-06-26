@@ -2,10 +2,10 @@ import axios from "axios";
 
 // Piston requires both the language name and the version
 const LANGUAGE_MAPPING: Record<string, { language: string; version: string }> = {
-    "C++": { language: "c++", version: "10.2.0" },
-    "Java": { language: "java", version: "15.0.2" },
-    "Python": { language: "python", version: "3.10.0" },
-    "JavaScript": { language: "javascript", version: "18.15.0" }
+    "C++": { language: "c++", version: "*" },
+    "Java": { language: "java", version: "*" },
+    "Python": { language: "python", version: "*" },
+    "JavaScript": { language: "javascript", version: "*" }
 };
 
 export const runCode = async (language: string, code: string, input: string = "") => {
