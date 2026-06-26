@@ -38,5 +38,5 @@ model Resume {
   extractedText String   @db.Text
   originalName  String
   uploadedAt    DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -19,7 +19,7 @@ coudinary.config({
 const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
     return new Promise((resolve, reject) => {
         const stream = coudinary.uploader.upload_stream(
-            { resource_type: "auto", folder: "resumes" },
+            { resource_type: "raw", folder: "resumes" },
             (error, result) => {
                 if (error) reject(error)
                 else resolve(result)
@@ -54,8 +54,13 @@ const uploadResume = async (req: Request, res: Response) => {
                 userId: req.user!.id
             }
         })
-
+        // if existed delete the previous file
         if (isExisted) {
+
+            await coudinary.uploader.destroy(isExisted.publicId, {
+                resource_type: "raw"
+            })
+
             await prisma.resume.updateMany({
                 data: {
                     extractedText: extractedText,
