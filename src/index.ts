@@ -5,11 +5,12 @@ import {userRouter} from "./routes/user.js"
 import cookieParser from "cookie-parser";
 import {resumeRouter} from "./routes/resume.js"
 import {interviewRouter} from "./routes/interview.js";
-
+import {codeRouter} from "./routes/code.js"
 const app =  express()
 const PORT = process.env.PORT || 3000
 app.use(cors({
-    origin:"https://round-one-frontend.vercel.app",
+     
+    origin : process.env.FRONTEND_URL,
     credentials: true
 }));
 // express.json is used to parse the requesting body
@@ -26,4 +27,5 @@ app.get("/", (req, res)=>{
 app.use("/user", userRouter);
 app.use("/resume", resumeRouter)
 app.use("/interview", interviewRouter)
+app.use("/code", codeRouter)
 app.listen(PORT, ()=> console.log("server is running", PORT))
