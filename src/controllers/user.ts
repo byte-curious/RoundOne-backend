@@ -348,4 +348,21 @@ const logout = async (req: Request, res: Response) => {
     }
 };
 
-export { resendOtp, otpValidation, signup, login, logout }
+const getMe = async(req:Request, res: Response)=>{
+    try {
+        const userId = req.user?.id;
+        if(!userId){
+            return res.status(400).json({error: "UserId is not given"});
+        }
+        const user = await prisma.user.findUnique({where: {
+            id : userId
+        }});
+        if(!user){
+            return res.status(404).json({error: "User Not Found"});
+        }
+        return res.status(200).json({user: {id: user.id, email : user.email, name: user.name}});
+    } catch (error) {
+        return res.status(500).json({error: "Internal Server Error"});
+    }
+}
+export {getMe, resendOtp, otpValidation, signup, login, logout }
