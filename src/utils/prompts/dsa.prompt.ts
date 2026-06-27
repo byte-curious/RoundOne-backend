@@ -1,17 +1,16 @@
-const seed = Math.random().toString(36).substring(2, 8);
-
 interface DSAPromptInput {
-company: string;
-level: "beginner" | "intermediate" | "advanced";
-language: string;
+    company: string;
+    level: "beginner" | "intermediate" | "advanced";
+    language: string;
 }
 
 export const buildDSAPrompt = ({
-company,
-level,
-language,
+    company,
+    level,
+    language,
 }: DSAPromptInput): string => {
-return `
+    const randomSeed = Math.floor(Math.random() * 10000);
+    return `
 You are a Senior Software Engineer and DSA Interviewer at ${company}.
 
 Your responsibility is to create a realistic coding interview problem suitable for a candidate interviewing at ${company}.
@@ -122,6 +121,22 @@ Each example must contain:
 * input
 * output
 * explanation
+
+CRITICAL INPUT FORMATTING RULE: 
+The "input" field MUST be formatted strictly for raw standard input (stdin) parsing in competitive programming. 
+DO NOT use variable names, equals signs, or brackets (e.g., NO "nums = [1, 2]"). 
+Use ONLY raw numbers separated by spaces or newlines. 
+Always provide the size of arrays/lists first.
+
+Example of GOOD input format:
+4
+10 20 30 40
+2
+1 25
+3 35
+
+Example of BAD input format:
+inventory = [10, 20, 30, 40], updates = [[1, 25], [3, 35]]
 
 Requirements:
 
@@ -247,6 +262,7 @@ No code fences.
 No explanations.
 Return ONLY the raw JSON object starting with { and ending with }.
 
-Session seed (ignore this, just ensures variety): ${seed}
+## Randomization Seed: ${randomSeed}
+CRITICAL INSTRUCTION: Use the Randomization Seed above to ensure you select a COMPLETELY DIFFERENT problem than you normally would. Pick a rare or unexpected problem from the ${company} question bank that fits the criteria. DO NOT output the classic default questions.
 `;
 };

@@ -1,5 +1,3 @@
-const seed = Math.random().toString(36).substring(2, 8);
-
 interface HRPromptInput {
   name: string;
   resumeText: string;
@@ -13,6 +11,7 @@ export const buildHRPrompt = ({
   company,
   role,
 }: HRPromptInput): string => {
+  const randomSeed = Math.floor(Math.random() * 10000);
   return `
 You are a Senior Human Resources Interviewer at ${company}.
 
@@ -117,6 +116,7 @@ Additional Validation:
 No markdown, no code fences, no explanation.
 Return ONLY the raw JSON object starting with { and ending with }
 
-Session seed (ignore this, just ensures variety): ${seed}
+## Randomization Seed: ${randomSeed}
+CRITICAL INSTRUCTION: Use the Randomization Seed above to ensure you select a COMPLETELY DIFFERENT problem than you normally would. Pick a rare or unexpected problem from the ${company} question bank that fits the criteria. DO NOT output the classic default questions.
 `;
 };

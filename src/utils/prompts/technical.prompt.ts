@@ -1,19 +1,18 @@
-const seed = Math.random().toString(36).substring(2, 8)
-
 interface TechnicalPromptInput {
-name: string;
-resumeText: string;
-company: string;
-role: string;
+    name: string;
+    resumeText: string;
+    company: string;
+    role: string;
 }
 
 export const buildTechnicalPrompt = ({
-name,
-resumeText,
-company,
-role,
+    name,
+    resumeText,
+    company,
+    role,
 }: TechnicalPromptInput): string => {
-return `
+    const randomSeed = Math.floor(Math.random() * 10000);
+    return `
 You are a Senior Software Engineer and Technical Interviewer at ${company}.
 
 Your responsibility is to create realistic, high-signal technical interview questions for a candidate applying for the role of ${role}.
@@ -277,6 +276,8 @@ Additional Validation:
 No markdown, no code fences, no explanation.
 Return ONLY the raw JSON object starting with { and ending with }.
 
-Session seed (ignore this, just ensures variety): ${seed}
+## Randomization Seed: ${randomSeed}
+CRITICAL INSTRUCTION: Use the Randomization Seed above to ensure you select a COMPLETELY DIFFERENT problem than you normally would. Pick a rare or unexpected problem from the ${company} question bank that fits the criteria. DO NOT output the classic default questions.
+
 `;
 };
