@@ -6,8 +6,8 @@ const userRouter = express.Router();
 
 userRouter.post("/signup", signup);
 userRouter.post("/verify-otp", otpValidation);
-userRouter.post("/resent-otp", resendOtp);
+userRouter.post("/resend-otp", resendOtp);
 userRouter.post("/login", login);
-userRouter.get("/logout", logout)
+userRouter.post("/logout", logout)
 userRouter.get("/me",auth, getMe);
 export {userRouter}

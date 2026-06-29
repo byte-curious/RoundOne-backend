@@ -317,7 +317,8 @@ const login = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: jwtExpiry * 1000
+            maxAge: jwtExpiry * 1000,
+            path: "/"
         })
         return res.status(200).json({
             "message": "Login Successfully", user: {
@@ -338,7 +339,8 @@ const logout = async (req: Request, res: Response) => {
         res.clearCookie("token", {
             httpOnly: true,
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            path: "/"
         });
         return res.status(200).json({ "message": "Logout successfully" });
 
