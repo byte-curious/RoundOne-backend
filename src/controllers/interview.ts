@@ -59,14 +59,14 @@ const startInterview = async (req: Request, res: Response) => {
 
 const evaluateInterview = async(req: Request, res: Response)=>{
     try {
-        const {round, question, answer, company} = req.body;
-        const response = await EvaluateInterview.safeParseAsync({round, question, answer, company});
+        const {round, question, answer, company, spokenApproach} = req.body;
+        const response = await EvaluateInterview.safeParseAsync({round, question, answer, company, spokenApproach});
         if(!response.success){
             return res.status(400).json({error: response.error});
         }
 
         // build prompt
-        const evaluatePrompt = buildEvaluationPrompt({round, question, answer, company});
+        const evaluatePrompt = buildEvaluationPrompt({round, question, answer, company, spokenApproach});
 
         // call gemini
         const evaluateRaw = await callGemini(evaluatePrompt);

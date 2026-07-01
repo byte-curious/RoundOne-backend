@@ -28,7 +28,13 @@ const EvaluateInterview = z.object({
     round :  z.string(),
     question : z.string(), 
     answer: z.string(),
-    company : z.string()
+    company : z.string(),
+    spokenApproach: z.string().optional()
 })
-
-export { sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview }
+const TTSRequestSchema = z.object({
+  text: z.string().min(1, "Text is required"),
+  voice: z.string().default("en-IN-NeerjaNeural"),
+  rate: z.string().default("+0%"),
+  pitch: z.string().default("+0Hz"),
+});
+export { sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }

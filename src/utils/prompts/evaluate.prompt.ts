@@ -1,17 +1,19 @@
 interface EvaluatePromptInput {
-round: "hr" | "technical" | "dsa";
-question: string;
-answer: string;
-company: string;
+  round: "hr" | "technical" | "dsa";
+  question: string;
+  answer: string;
+  company: string;
+  spokenApproach?: string; // for spoken answer in dsa
 }
 
 export const buildEvaluationPrompt = ({
-round,
-question,
-answer,
-company,
+  round,
+  question,
+  answer,
+  company,
+  spokenApproach,  
 }: EvaluatePromptInput): string => {
-return `
+  return `
 You are a Senior Interview Evaluator at ${company}.
 
 Your responsibility is to evaluate a candidate's interview answer exactly as a real interviewer would.
@@ -27,8 +29,10 @@ ${company}
 Question:
 ${question}
 
-Candidate Answer:
+Candidate Answer ${round === "dsa" ? "(Submitted Code)" : ""}:
 ${answer}
+
+${spokenApproach ? `Candidate's Spoken Explanation (Audio Transcript):\n${spokenApproach}` : ""}
 
 ## Evaluation Objective
 
@@ -47,42 +51,36 @@ Only evaluate what is explicitly present in the answer.
 Use the following scoring rubric:
 
 0-2:
-
 * Completely incorrect
 * No meaningful answer
 * Off-topic
 * Serious misunderstandings
 
 3-4:
-
 * Weak answer
 * Major gaps
 * Poor communication
 * Lacks depth
 
 5-6:
-
 * Average answer
 * Partially correct
 * Some useful points
 * Missing important details
 
 7-8:
-
 * Strong answer
 * Good understanding
 * Clear communication
 * Minor weaknesses
 
 9:
-
 * Excellent answer
 * Deep understanding
 * Well-structured
 * Strong examples
 
 10:
-
 * Exceptional answer
 * Interview-ready
 * Demonstrates expertise
@@ -91,9 +89,7 @@ Use the following scoring rubric:
 ## Round-Specific Evaluation Rules
 
 If round = "hr":
-
 Evaluate:
-
 * communication
 * confidence
 * clarity
@@ -106,16 +102,13 @@ Evaluate:
 * structure of response
 
 Look for:
-
 * STAR format usage
 * real examples
 * measurable outcomes
 * self-awareness
 
 If round = "technical":
-
 Evaluate:
-
 * technical accuracy
 * engineering depth
 * architecture understanding
@@ -126,18 +119,15 @@ Evaluate:
 * problem-solving ability
 
 Look for:
-
 * technical correctness
 * decision rationale
 * practical experience
 * engineering judgment
 
 If round = "dsa":
-
 Evaluate:
-
 * algorithmic thinking
-* correctness
+* code correctness
 * time complexity awareness
 * space complexity awareness
 * edge case consideration
@@ -145,33 +135,38 @@ Evaluate:
 * clarity of explanation
 
 Look for:
-
 * correct approach
 * efficient solution
 * logical reasoning
 * understanding of constraints
 
+${spokenApproach ? `
+Special DSA Evaluation Rule (Code + Audio):
+You have received BOTH the candidate's code AND their spoken explanation. You must evaluate them together:
+1. Does their spoken explanation match the logic written in their code?
+2. Did they correctly identify the Time and Space complexity verbally?
+3. Communication matters: If the code is perfect but the spoken explanation is confusing or poor, do NOT give a score higher than 8.
+4. Problem Solving: If the code has minor syntax issues but their spoken logic and reasoning are flawless, reward their problem-solving ability in the score and feedback.
+` : ""}
+
 ## Feedback Rules
 
 Strong Points:
-
 * minimum 2 items
 * maximum 5 items
 * must be evidence-based
 
 Improvements:
-
 * minimum 2 items
 * maximum 5 items
 * must be actionable
 
 Feedback:
-
 * concise but meaningful
 * explain why the score was assigned
+${spokenApproach ? "* explicitly mention how well they verbally communicated their approach" : ""}
 
 Suggestion:
-
 * one specific recommendation that would most improve future performance
 
 ## Output Rules
