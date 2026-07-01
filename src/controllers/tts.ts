@@ -10,6 +10,10 @@ import { TTSRequestSchema } from "../zod/index.js"
 const execPromise = promisify(exec); // this is done so that we can do async/await instead of callbacks
 
 export const generateTTS = async (req: Request, res: Response): Promise<any> => {
+    // Declare file paths here so they can be accessed in the 'finally' cleanup block
+    let textFilePath = "";
+    let audioFilePath = "";
+
     try {
         // validate zod 
         const { text, pitch, rate, voice } = req.body;
@@ -19,9 +23,10 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
         };
 
         // creating unique temp file for all users
+        //  Added .txt and .mp3 extensions so Node knows exactly what to delete
         const fileId = crypto.randomUUID();
-        const textFilePath = path.join(os.tmpdir(), `${fileId}`);
-        const audioFilePath = path.join(os.tmpdir(), `${fileId}`);
+        textFilePath = path.join(os.tmpdir(), `${fileId}.txt`);
+        audioFilePath = path.join(os.tmpdir(), `${fileId}.mp3`);
 
         // write text to file
         // we do this to prevent project from command injection
@@ -34,15 +39,23 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
         // read the generated audio file
         const audioBytes = fs.readFileSync(audioFilePath);
 
-        // cleanup -> isliye kar rhe ki audio files server pe n rahe kyuki ae space full kar dega
-        fs.unlinkSync(textFilePath);
-        fs.unlinkSync(audioFilePath);
-
         // send the raw audi bytes back to frontend
         res.setHeader("Content-type", "audio/mpeg");
-        return res.status(200).send(audioBytes);
+        res.status(200).send(audioBytes);
+
     } catch (error) {
         console.error("TTS Generation Error:", error);
-        return res.status(500).json({ error: "Failed to generate audio" });
+        if (!res.headersSent) {
+            return res.status(500).json({ error: "Failed to generate audio" });
+        }
+    } finally {
+        // cleanup -> isliye kar rhe ki audio files server pe n rahe kyuki ae space full kar dega
+        // SAFE CLEANUP: fs.existsSync checks if the file exists before deleting, preventing server crashes!
+        try {
+            if (textFilePath && fs.existsSync(textFilePath)) fs.unlinkSync(textFilePath);
+            if (audioFilePath && fs.existsSync(audioFilePath)) fs.unlinkSync(audioFilePath);
+        } catch (cleanupError) {
+            console.error("Cleanup failed:", cleanupError);
+        }
     }
 }
