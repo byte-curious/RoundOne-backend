@@ -58,6 +58,11 @@ Return ONLY valid JSON. No markdown formatting. No explanations.
 {
   "overallScore": 0,
   "scoreCategory": "<Must be one of: Auto-Reject, Needs Work, Average, Strong, Hire>",
+  "matchedRoles": [
+    { "role": "Frontend Engineer", "matchPercentage": 85 },
+    { "role": "Backend Engineer", "matchPercentage": 60 },
+    { "role": "Full Stack Developer", "matchPercentage": 40 }
+  ],
   "criticalIssues": [
     "List 1-3 major reasons why points were deducted based on the Score Caps"
   ],
@@ -87,5 +92,6 @@ VALIDATION RULES (MUST FOLLOW)
 * lineByLineFixes MUST contain exactly 3 to 5 items.
 * missingKeywords MUST be an array of strings (can be empty if none).
 * Return ONLY raw JSON, starting with { and ending with }.
+* matchedRoles MUST contain exactly 4 items. Each item must have a "role" (string) and "matchPercentage" (integer between 0 and 100).
 * EVERY key inside "sectionScores" MUST be an object containing EXACTLY two keys: "score" (number) and "feedback" (string). DO NOT return just a number.`
 };
