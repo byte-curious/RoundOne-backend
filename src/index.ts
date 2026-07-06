@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import {resumeRouter} from "./routes/resume.js"
 import {interviewRouter} from "./routes/interview.js";
 import {codeRouter} from "./routes/code.js"
+import "./worker/execution.js"
+
 const app =  express()
 const PORT = process.env.PORT || 3000
 app.use(cors({

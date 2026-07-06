@@ -1,4 +1,5 @@
-import z, { string } from "zod"
+import z from "zod"
+import { languageConfigs } from "../config/languages.js";
 
 const UserSchema = z.object({
     name: z.string(),
@@ -37,4 +38,21 @@ const TTSRequestSchema = z.object({
   rate: z.string().default("+0%"),
   pitch: z.string().default("+0Hz"),
 });
-export { sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }
+
+const supportedLanguages = Object.keys(languageConfigs) as [string, ...string[]];
+
+
+const TestCaseSchema = z.object({
+    input: z.string(),
+    expectedOutput : z.string()
+})
+const ExecuteSchema = z.object({
+    code : z.string().trim().min(1, "code cannot be empty"),
+    language: z.enum(supportedLanguages),
+    
+    testCases : z.array(TestCaseSchema).min(1, "at least 1 test case is required")
+});
+export type TestCase = z.infer<typeof TestCaseSchema>;
+export type ExecuteRequest = z.infer<typeof ExecuteSchema>;
+
+export {TestCaseSchema, ExecuteSchema, sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }
