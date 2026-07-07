@@ -55,7 +55,8 @@ export const ModelName = {
   OTPVerification: 'OTPVerification',
   Resume: 'Resume',
   Session: 'Session',
-  Evaluation: 'Evaluation'
+  Evaluation: 'Evaluation',
+  Progress: 'Progress'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -142,6 +143,17 @@ export const EvaluationScalarFieldEnum = {
 } as const
 
 export type EvaluationScalarFieldEnum = (typeof EvaluationScalarFieldEnum)[keyof typeof EvaluationScalarFieldEnum]
+
+
+export const ProgressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sheetId: 'sheetId',
+  taskId: 'taskId',
+  completedAt: 'completedAt'
+} as const
+
+export type ProgressScalarFieldEnum = (typeof ProgressScalarFieldEnum)[keyof typeof ProgressScalarFieldEnum]
 
 
 export const SortOrder = {

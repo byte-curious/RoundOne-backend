@@ -22,6 +22,7 @@ model User {
 
   resume   Resume?
   sessions Session[]
+  progress Progress[]
 }
 
 model OTPVerification {
@@ -74,4 +75,15 @@ model Evaluation {
   createdAt       DateTime @default(now())
 
   session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Progress {
+  id          String   @id @default(uuid())
+  userId      String
+  sheetId     String
+  taskId      String
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId, sheetId]) // ae is liye ki ek banda ek sheet me ek hi task perform kar paye
 }
