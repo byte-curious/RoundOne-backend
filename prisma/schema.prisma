@@ -12,24 +12,28 @@ datasource db {
   provider = "postgresql"
 }
 
-model User{
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  resume Resume?
+
+  resume   Resume?
+  sessions Session[]
 }
-model OTPVerification{
-  id String @id @default(uuid())
-  name String
-  password String
-  email String @unique
-  otp Int
+
+model OTPVerification {
+  id        String   @id @default(uuid())
+  name      String
+  password  String
+  email     String   @unique
+  otp       Int
   expiredAt DateTime
   createdAt DateTime @default(now())
 }
+
 model Resume {
   id            String   @id @default(uuid())
   userId        String   @unique
@@ -39,4 +43,35 @@ model Resume {
   originalName  String
   uploadedAt    DateTime @default(now())
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  userId     String
+  company    String
+  role       String
+  level      String
+  language   String
+  totalScore Int
+  createdAt  DateTime @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evaluations Evaluation[]
+}
+
+model Evaluation {
+  id              String   @id @default(uuid())
+  sessionId       String
+  round           String // "hr", "technical", or "dsa"
+  question        String   @db.Text
+  candidateAnswer String   @db.Text
+  score           Int
+  maxScore        Int
+  feedback        String   @db.Text
+  strongPoints    String[]
+  improvements    String[]
+  suggestion      String   @db.Text
+  createdAt       DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }

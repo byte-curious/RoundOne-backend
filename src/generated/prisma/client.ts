@@ -56,3 +56,13 @@ export type OTPVerification = Prisma.OTPVerificationModel
  * 
  */
 export type Resume = Prisma.ResumeModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model Evaluation
+ * 
+ */
+export type Evaluation = Prisma.EvaluationModel

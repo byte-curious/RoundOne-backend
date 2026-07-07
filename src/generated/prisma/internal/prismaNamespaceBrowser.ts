@@ -53,7 +53,9 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   OTPVerification: 'OTPVerification',
-  Resume: 'Resume'
+  Resume: 'Resume',
+  Session: 'Session',
+  Evaluation: 'Evaluation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,6 +110,38 @@ export const ResumeScalarFieldEnum = {
 } as const
 
 export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  company: 'company',
+  role: 'role',
+  level: 'level',
+  language: 'language',
+  totalScore: 'totalScore',
+  createdAt: 'createdAt'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const EvaluationScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  round: 'round',
+  question: 'question',
+  candidateAnswer: 'candidateAnswer',
+  score: 'score',
+  maxScore: 'maxScore',
+  feedback: 'feedback',
+  strongPoints: 'strongPoints',
+  improvements: 'improvements',
+  suggestion: 'suggestion',
+  createdAt: 'createdAt'
+} as const
+
+export type EvaluationScalarFieldEnum = (typeof EvaluationScalarFieldEnum)[keyof typeof EvaluationScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -83,5 +83,72 @@ const evaluateInterview = async(req: Request, res: Response)=>{
         return res.status(500).json({error : "Internal Server Error"});
     }
 }
+const saveInterviewSession = async (req: Request, res: Response) => {
+    try {
+        const { company, role, level, language, evaluations } = req.body;
 
-export {startInterview, evaluateInterview}
+        //   validation
+        if (!company || !role || !evaluations || evaluations.length === 0) {
+            return res.status(400).json({ error: "Missing required session data" });
+        }
+
+        // Calculate the total score
+        const totalScore = evaluations.reduce((sum: number, ev: any) => sum + ev.score, 0);
+
+        // Creates the Session AND all Evaluations in one transaction!
+        const savedSession = await prisma.session.create({
+            data: {
+                userId: req.user!.id,  
+                company,
+                role,
+                level,
+                language,
+                totalScore,
+                evaluations: {
+                    create: evaluations.map((ev: any) => ({
+                        round: ev.round,
+                        question: ev.question,
+                        candidateAnswer: ev.answer || "No answer provided", 
+                        score: ev.score,
+                        maxScore: ev.maxScore,
+                        feedback: ev.feedback,
+                        strongPoints: ev.strongPoints,
+                        improvements: ev.improvements,
+                        suggestion: ev.suggestion
+                    }))
+                }
+            }
+        });
+
+        return res.status(201).json({ message: "Session saved successfully", sessionId: savedSession.id });
+
+    } catch (error) {
+        console.error("Failed to save session:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+const getInterviewHistory = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!.id;
+
+        // Fetch all sessions for this user, including their evaluations
+        const sessions = await prisma.session.findMany({
+            where: { userId },
+            include: {
+                evaluations: true // We need this to calculate average scores!
+            },
+            orderBy: {
+                createdAt: 'desc' // Newest interviews first
+            }
+        });
+
+        return res.status(200).json({ sessions });
+
+    } catch (error) {
+        console.error("Failed to fetch interview history:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
+export {startInterview, evaluateInterview, saveInterviewSession, getInterviewHistory}
