@@ -42,3 +42,8 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Evaluation = Prisma.EvaluationModel
+/**
+ * Model Progress
+ * 
+ */
+export type Progress = Prisma.ProgressModel

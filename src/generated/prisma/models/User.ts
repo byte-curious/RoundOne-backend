@@ -192,6 +192,7 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
   sessions?: Prisma.SessionListRelationFilter
+  progress?: Prisma.ProgressListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -203,6 +204,7 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   resume?: Prisma.ResumeOrderByWithRelationInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
+  progress?: Prisma.ProgressOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -217,6 +219,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
   sessions?: Prisma.SessionListRelationFilter
+  progress?: Prisma.ProgressListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -252,6 +255,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -263,6 +267,7 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -274,6 +279,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -285,6 +291,7 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -382,6 +389,20 @@ export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
+export type UserCreateNestedOneWithoutProgressInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProgressInput, Prisma.UserUncheckedCreateWithoutProgressInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProgressInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutProgressNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProgressInput, Prisma.UserUncheckedCreateWithoutProgressInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProgressInput
+  upsert?: Prisma.UserUpsertWithoutProgressInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProgressInput, Prisma.UserUpdateWithoutProgressInput>, Prisma.UserUncheckedUpdateWithoutProgressInput>
+}
+
 export type UserCreateWithoutResumeInput = {
   id?: string
   name: string
@@ -390,6 +411,7 @@ export type UserCreateWithoutResumeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumeInput = {
@@ -400,6 +422,7 @@ export type UserUncheckedCreateWithoutResumeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumeInput = {
@@ -426,6 +449,7 @@ export type UserUpdateWithoutResumeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumeInput = {
@@ -436,6 +460,7 @@ export type UserUncheckedUpdateWithoutResumeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -446,6 +471,7 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
+  progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -456,6 +482,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
+  progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -482,6 +509,7 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
+  progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -492,6 +520,67 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
+  progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutProgressInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutProgressInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutProgressInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProgressInput, Prisma.UserUncheckedCreateWithoutProgressInput>
+}
+
+export type UserUpsertWithoutProgressInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProgressInput, Prisma.UserUncheckedUpdateWithoutProgressInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProgressInput, Prisma.UserUncheckedCreateWithoutProgressInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProgressInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProgressInput, Prisma.UserUncheckedUpdateWithoutProgressInput>
+}
+
+export type UserUpdateWithoutProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProgressInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -501,10 +590,12 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
 
 export type UserCountOutputType = {
   sessions: number
+  progress: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  progress?: boolean | UserCountOutputTypeCountProgressArgs
 }
 
 /**
@@ -524,6 +615,13 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.SessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProgressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProgressWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -534,6 +632,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   resume?: boolean | Prisma.User$resumeArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  progress?: boolean | Prisma.User$progressArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -568,6 +667,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resume?: boolean | Prisma.User$resumeArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  progress?: boolean | Prisma.User$progressArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -578,6 +678,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     resume: Prisma.$ResumePayload<ExtArgs> | null
     sessions: Prisma.$SessionPayload<ExtArgs>[]
+    progress: Prisma.$ProgressPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -982,6 +1083,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   resume<T extends Prisma.User$resumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumeArgs<ExtArgs>>): Prisma.Prisma__ResumeClient<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  progress<T extends Prisma.User$progressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$progressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1450,6 +1552,30 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
+}
+
+/**
+ * User.progress
+ */
+export type User$progressArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Progress
+   */
+  select?: Prisma.ProgressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Progress
+   */
+  omit?: Prisma.ProgressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgressInclude<ExtArgs> | null
+  where?: Prisma.ProgressWhereInput
+  orderBy?: Prisma.ProgressOrderByWithRelationInput | Prisma.ProgressOrderByWithRelationInput[]
+  cursor?: Prisma.ProgressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProgressScalarFieldEnum | Prisma.ProgressScalarFieldEnum[]
 }
 
 /**
