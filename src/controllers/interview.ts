@@ -149,6 +149,32 @@ const getInterviewHistory = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
+const getPublicReport = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
 
+        if(!id){
+            return res.status(400).json({error: "id is not present"});
+        }
+        
+        const session = await prisma.session.findUnique({
+            where: { id: id.toString() },
+            include: {
+                evaluations: true,
+                user: { select: { name: true } }  
+            }
+        });
 
-export {startInterview, evaluateInterview, saveInterviewSession, getInterviewHistory}
+        if (!session) {
+            return res.status(404).json({ error: "Report not found" });
+        }
+
+        return res.status(200).json({ session });
+
+    } catch (error) {
+        console.error("Failed to fetch public report:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+export {startInterview, evaluateInterview, saveInterviewSession, getInterviewHistory, getPublicReport}
