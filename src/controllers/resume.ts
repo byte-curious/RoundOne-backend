@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express"
-import { v2 as coudinary } from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 // import * as pdfParser from "pdf-parse";
 //  as pdf-parser is a commonjs module, but import is ESM so we have to do this.
 import { createRequire } from "module";
@@ -9,7 +9,7 @@ const { PDFParse } = require("pdf-parse");
 import { prisma } from "../utils/database/db.js"
 
 
-coudinary.config({
+cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
     api_key: process.env.CLOUDINARY_API_KEY!,
     api_secret: process.env.CLOUDINARY_API_SECRET!
@@ -63,8 +63,8 @@ function sanitizeResumeText(text: string): string {
 
 const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
     return new Promise((resolve, reject) => {
-        const stream = coudinary.uploader.upload_stream(
-            { resource_type: "raw", folder: "resumes" },
+        const stream = cloudinary.uploader.upload_stream(
+            { resource_type: "auto", folder: "resumes", timeout: 60000},
             (error, result) => {
                 if (error) reject(error)
                 else resolve(result)
@@ -81,9 +81,7 @@ const uploadResume = async (req: Request, res: Response) => {
         if (!file) {
             return res.status(400).json({ "error": "Resume file is required" })
         };
-        //    const uploadToCloudinary
-        const cloudinaryResult = await uploadToCloudinary(file.buffer);
-
+        
         const parser = new PDFParse({ data: file.buffer });
         const pdfData = await parser.getText();
         const extractedText = pdfData.text.trim();
@@ -98,18 +96,27 @@ const uploadResume = async (req: Request, res: Response) => {
         const sanitizeExtractedText = sanitizeResumeText(extractedText);
         // console.log(sanitizeExtractedText);
 
+        
         // check whether the resume is present in user'db 
         const isExisted = await prisma.resume.findUnique({
             where: {
                 userId: req.user!.id
             }
         })
+
+        //    const uploadToCloudinary
+        const cloudinaryResult = await uploadToCloudinary(file.buffer);
+
         // if existed delete the previous file
         if (isExisted) {
 
-            await coudinary.uploader.destroy(isExisted.publicId, {
-                resource_type: "raw"
-            })
+             try {
+                await cloudinary.uploader.destroy(isExisted.publicId, {
+                    resource_type: "image"
+                });
+            } catch (deleteError) {
+                console.log("Could not delete old resume from cloudinary, but continuing:", deleteError);
+            }
 
             await prisma.resume.updateMany({
                 data: {
