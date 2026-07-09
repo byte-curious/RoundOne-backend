@@ -27,9 +27,9 @@ import jwt from "jsonwebtoken";
 
 async function sendEmailViaBrevo(to: string, name: string, subject: string, html: string, text: string) {
     const url = "https://api.brevo.com/v3/smtp/email";
-    
+
     // SENDER_EMAIL must be the email you used to sign up for Brevo
-    const senderEmail = process.env.SENDER_EMAIL; 
+    const senderEmail = process.env.SENDER_EMAIL;
     const apiKey = process.env.BREVO_API_KEY;
 
     if (!senderEmail || !apiKey) {
@@ -59,7 +59,7 @@ async function sendEmailViaBrevo(to: string, name: string, subject: string, html
         if (!response.ok) {
             const errorData = await response.json();
             console.error("Brevo API Error:", JSON.stringify(errorData));
-        } 
+        }
         // else {
         //     console.log(`Email successfully sent to ${to}`);
         // }
@@ -350,21 +350,134 @@ const logout = async (req: Request, res: Response) => {
     }
 };
 
-const getMe = async(req:Request, res: Response)=>{
+const getMe = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
-        if(!userId){
-            return res.status(400).json({error: "UserId is not given"});
+        if (!userId) {
+            return res.status(400).json({ error: "UserId is not given" });
         }
-        const user = await prisma.user.findUnique({where: {
-            id : userId
-        }});
-        if(!user){
-            return res.status(404).json({error: "User Not Found"});
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User Not Found" });
         }
-        return res.status(200).json({user: {id: user.id, email : user.email, name: user.name}});
+        return res.status(200).json({ user: { id: user.id, email: user.email, name: user.name } });
     } catch (error) {
-        return res.status(500).json({error: "Internal Server Error"});
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 }
-export {getMe, resendOtp, otpValidation, signup, login, logout }
+const updatePassword = async (req: Request, res: Response) => {
+    try {
+        const { resetToken, password, confirmPassword } = req.body;
+
+        if (!resetToken) {
+            return res.status(400).json({ error: "Missing or invalid reset session" });
+        }
+        if (!password || password !== confirmPassword) {
+            return res.status(400).json({ error: "Passwords do not match" });
+        }
+        if (password.length < 6) {
+            return res.status(400).json({ error: "Password must be at least 6 characters" });
+        }
+
+        const secret = process.env.RESET_TOKEN_SECRET;
+        if (!secret) {
+            return res.status(500).json({ error: "Server configuration error" });
+        }
+
+        let payload: { email: string };
+        try {
+            payload = jwt.verify(resetToken, secret) as { email: string };
+        } catch {
+            return res.status(401).json({ error: "Reset link expired. Please request a new OTP." });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+        await prisma.user.update({
+            where: { email: payload.email },
+            data: { password: hashedPassword }
+        });
+
+        return res.status(200).json({ message: "Password Updated Successfully" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        const response = await resendOTP.safeParseAsync({ email });  
+        if (!response.success) {
+            return res.status(400).json({ error: "Enter valid email" });
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            return res.status(200).json({ message: "If that email exists, an OTP has been sent." });
+        }
+
+        const existingRequest = await prisma.passwordResetOTP.findUnique({ where: { email } });
+        if (existingRequest && new Date() < existingRequest.expiredAt) {
+            return res.status(400).json({ error: "OTP already sent. Please check your email." });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const expiredAt = new Date(Date.now() + 1 * 60 * 1000);
+
+        await prisma.passwordResetOTP.upsert({
+            where: { email },
+            update: { otp, expiredAt },
+            create: { email, otp, expiredAt }
+        });
+
+        await sendOtpEmail(email, user.name, otp.toString());
+
+        return res.status(200).json({ message: "If that email exists, an OTP has been sent." });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+const verifyResetOtp = async (req: Request, res: Response) => {
+    try {
+        const { otp, email } = req.body;
+        const response = await sendOTP.safeParseAsync({ otp, email }); 
+        if (!response.success) {
+            return res.status(400).json({ error: "Enter Valid Input" });
+        }
+
+        const record = await prisma.passwordResetOTP.findUnique({ where: { email } });
+        if (!record) {
+            return res.status(404).json({ error: "Invalid OTP" });
+        }
+        if (parseInt(otp) !== record.otp) {
+            return res.status(400).json({ error: "Invalid OTP" });
+        }
+        if (new Date() > record.expiredAt) {
+            return res.status(400).json({ error: "Expired OTP" });
+        }
+
+        await prisma.passwordResetOTP.delete({ where: { email } });
+
+        const secret = process.env.RESET_TOKEN_SECRET;
+        if (!secret) {
+            return res.status(500).json({ error: "Server configuration error" });
+        }
+
+        const resetToken = jwt.sign({ email }, secret, { expiresIn: "10m" });
+        return res.status(200).json({ message: "OTP verified", resetToken });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+export { getMe, resendOtp, otpValidation, signup, login, logout,updatePassword, forgotPassword, verifyResetOtp}

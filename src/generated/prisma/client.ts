@@ -52,6 +52,11 @@ export type User = Prisma.UserModel
  */
 export type OTPVerification = Prisma.OTPVerificationModel
 /**
+ * Model PasswordResetOTP
+ * 
+ */
+export type PasswordResetOTP = Prisma.PasswordResetOTPModel
+/**
  * Model Resume
  * 
  */

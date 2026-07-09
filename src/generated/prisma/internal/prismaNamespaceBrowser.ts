@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   OTPVerification: 'OTPVerification',
+  PasswordResetOTP: 'PasswordResetOTP',
   Resume: 'Resume',
   Session: 'Session',
   Evaluation: 'Evaluation',
@@ -98,6 +99,15 @@ export const OTPVerificationScalarFieldEnum = {
 } as const
 
 export type OTPVerificationScalarFieldEnum = (typeof OTPVerificationScalarFieldEnum)[keyof typeof OTPVerificationScalarFieldEnum]
+
+
+export const PasswordResetOTPScalarFieldEnum = {
+  email: 'email',
+  otp: 'otp',
+  expiredAt: 'expiredAt'
+} as const
+
+export type PasswordResetOTPScalarFieldEnum = (typeof PasswordResetOTPScalarFieldEnum)[keyof typeof PasswordResetOTPScalarFieldEnum]
 
 
 export const ResumeScalarFieldEnum = {

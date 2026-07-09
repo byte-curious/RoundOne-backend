@@ -34,6 +34,11 @@ model OTPVerification {
   expiredAt DateTime
   createdAt DateTime @default(now())
 }
+model PasswordResetOTP {
+  email     String   @id
+  otp       Int
+  expiredAt DateTime
+}
 
 model Resume {
   id            String   @id @default(uuid())
