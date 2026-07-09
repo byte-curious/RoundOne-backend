@@ -15,6 +15,51 @@ coudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET!
 });
 
+function sanitizeResumeText(text: string): string {
+  let cleaned = text;
+
+  // Remove email addresses
+  cleaned = cleaned.replace(
+    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
+    "[EMAIL REMOVED]"
+  );
+
+  // Remove Indian & international phone numbers
+  cleaned = cleaned.replace(
+    /(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,5}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,6}\b/g,
+    "[PHONE REMOVED]"
+  );
+
+  // Remove URLs
+  cleaned = cleaned.replace(
+    /\b(?:https?:\/\/|www\.)\S+\b/g,
+    "[URL REMOVED]"
+  );
+
+  // Remove LinkedIn URLs
+  cleaned = cleaned.replace(
+    /linkedin\.com\/\S+/gi,
+    "[LINKEDIN REMOVED]"
+  );
+
+  // Remove GitHub URLs
+  cleaned = cleaned.replace(
+    /github\.com\/\S+/gi,
+    "[GITHUB REMOVED]"
+  );
+
+  // Remove common Indian PIN codes
+  cleaned = cleaned.replace(/\b\d{6}\b/g, "[PIN REMOVED]");
+
+  // Remove multiple separators left behind
+  cleaned = cleaned.replace(/\s*\|\s*\|\s*/g, " | ");
+
+  // Remove empty lines
+  cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
+
+  return cleaned.trim();
+}
+
 
 const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
     return new Promise((resolve, reject) => {
@@ -47,6 +92,11 @@ const uploadResume = async (req: Request, res: Response) => {
         if (extractedText.length < 50) {
             return res.status(400).json({ error: "Invalid File" });
         };
+        // checking extracted text
+        // console.log(extractedText)
+        // now senitise the extractedText
+        const sanitizeExtractedText = sanitizeResumeText(extractedText);
+        // console.log(sanitizeExtractedText);
 
         // check whether the resume is present in user'db 
         const isExisted = await prisma.resume.findUnique({
@@ -63,7 +113,7 @@ const uploadResume = async (req: Request, res: Response) => {
 
             await prisma.resume.updateMany({
                 data: {
-                    extractedText: extractedText,
+                    extractedText: sanitizeExtractedText,
                     fileUrl: cloudinaryResult.secure_url,
                     publicId: cloudinaryResult.public_id,
                     originalName: file.originalname
@@ -79,7 +129,7 @@ const uploadResume = async (req: Request, res: Response) => {
                     userId: req.user!.id,
                     publicId: cloudinaryResult.public_id,
                     originalName: file.originalname,
-                    extractedText,
+                    extractedText: sanitizeExtractedText,
                     fileUrl: cloudinaryResult.secure_url
                 }
             })
