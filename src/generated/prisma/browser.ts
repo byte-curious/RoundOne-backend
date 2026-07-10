@@ -52,3 +52,23 @@ export type Evaluation = Prisma.EvaluationModel
  * 
  */
 export type Progress = Prisma.ProgressModel
+/**
+ * Model Question
+ * 
+ */
+export type Question = Prisma.QuestionModel
+/**
+ * Model TestCase
+ * 
+ */
+export type TestCase = Prisma.TestCaseModel
+/**
+ * Model Submission
+ * 
+ */
+export type Submission = Prisma.SubmissionModel
+/**
+ * Model POD
+ * 
+ */
+export type POD = Prisma.PODModel

@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "two-sum",
+    "title": "Two Sum",
+    "description": "Given an array...",
+    "difficulty": "EASY",
+    "topics": ["Array", "Hash Table"],
+    "companies": ["Amazon", "Google"],
+    "testCases": [
+      { "input": "4\n2 7 11 15\n9", "expectedOutput": "0 1", "isHidden": false }
+    ]
+  }
+]

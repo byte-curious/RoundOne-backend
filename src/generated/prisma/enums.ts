@@ -9,7 +9,22 @@
 * 🟢 You can import this file directly.
 */
 
+export const Verdict = {
+  AC: 'AC',
+  WA: 'WA',
+  RTE: 'RTE',
+  TLE: 'TLE',
+  CE: 'CE',
+  MLE: 'MLE'
+} as const
+
+export type Verdict = (typeof Verdict)[keyof typeof Verdict]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const Difficulty = {
+  EASY: 'EASY',
+  MEDIUM: 'MEDIUM',
+  HARD: 'HARD'
+} as const
+
+export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]

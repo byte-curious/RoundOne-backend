@@ -57,7 +57,11 @@ export const ModelName = {
   Resume: 'Resume',
   Session: 'Session',
   Evaluation: 'Evaluation',
-  Progress: 'Progress'
+  Progress: 'Progress',
+  Question: 'Question',
+  TestCase: 'TestCase',
+  Submission: 'Submission',
+  POD: 'POD'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -166,6 +170,58 @@ export const ProgressScalarFieldEnum = {
 export type ProgressScalarFieldEnum = (typeof ProgressScalarFieldEnum)[keyof typeof ProgressScalarFieldEnum]
 
 
+export const QuestionScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  difficulty: 'difficulty',
+  topics: 'topics',
+  companies: 'companies',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QuestionScalarFieldEnum = (typeof QuestionScalarFieldEnum)[keyof typeof QuestionScalarFieldEnum]
+
+
+export const TestCaseScalarFieldEnum = {
+  id: 'id',
+  input: 'input',
+  expectedOutput: 'expectedOutput',
+  isHidden: 'isHidden',
+  questionId: 'questionId'
+} as const
+
+export type TestCaseScalarFieldEnum = (typeof TestCaseScalarFieldEnum)[keyof typeof TestCaseScalarFieldEnum]
+
+
+export const SubmissionScalarFieldEnum = {
+  id: 'id',
+  questionId: 'questionId',
+  userId: 'userId',
+  code: 'code',
+  language: 'language',
+  verdict: 'verdict',
+  userApproach: 'userApproach',
+  createdAt: 'createdAt',
+  timeComplexity: 'timeComplexity',
+  spaceComplexity: 'spaceComplexity',
+  aiFeedback: 'aiFeedback'
+} as const
+
+export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
+
+
+export const PODScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  questionId: 'questionId'
+} as const
+
+export type PODScalarFieldEnum = (typeof PODScalarFieldEnum)[keyof typeof PODScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -180,4 +236,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

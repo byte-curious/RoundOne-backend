@@ -12,6 +12,21 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Verdict {
+  AC
+  WA
+  RTE
+  TLE
+  CE // compilation ERROR
+  MLE
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -20,9 +35,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  resume   Resume?
-  sessions Session[]
-  progress Progress[]
+  resume     Resume?
+  sessions   Session[]
+  progress   Progress[]
+  submission Submission[]
 }
 
 model OTPVerification {
@@ -34,6 +50,7 @@ model OTPVerification {
   expiredAt DateTime
   createdAt DateTime @default(now())
 }
+
 model PasswordResetOTP {
   email     String   @id
   otp       Int
@@ -91,4 +108,58 @@ model Progress {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, taskId, sheetId]) // ae is liye ki ek banda ek sheet me ek hi task perform kar paye
+}
+
+model Question {
+  id          String     @id @default(uuid())
+  slug        String     @unique
+  title       String
+  description String @db.Text
+  difficulty  Difficulty
+  topics      String[]
+  companies   String[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  testCases  TestCase[]
+  pods       POD[]
+  submission Submission[]
+}
+
+model TestCase {
+  id             String  @id @default(uuid())
+  input          String  @db.Text 
+  expectedOutput String @db.Text
+  isHidden       Boolean // kuchh test case hi visible honge rest all are hidden
+  questionId     String
+
+  question Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  questionId   String
+  userId       String
+  code         String   @db.Text
+  language     String
+  verdict      Verdict
+  userApproach String?  @db.Text
+  createdAt    DateTime @default(now())
+
+  // AI KO CALL KARKE JO TC SC AND FEEDBACK AAYEGA ->
+  timeComplexity  String?
+  spaceComplexity String?
+  aiFeedback      String? @db.Text
+
+  // relationship
+  user     User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  question Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
+}
+
+model POD {
+  id         String   @id @default(uuid())
+  date       DateTime @unique @db.Date
+  questionId String
+
+  question Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
 }
