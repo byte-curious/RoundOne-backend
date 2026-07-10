@@ -9,28 +9,49 @@ import { SubmitCodeSchema } from "../zod/index.js";
 
 const getAllQuestions = async (req: Request, res: Response) => {
     try {
+        const userId = req.user?.id;
+
         const page = Number(req.query?.page) || 1;
         const limit = Number(req.query?.limit) || 20;
         const company = req.query.company as string || undefined;
         const difficulty = req.query.difficulty as string || undefined;
         const topic = req.query.topic as string || undefined;
         const search = req.query.search as string || undefined;
+        
+        //  Extract the new status filter
+        const status = req.query.status as string || undefined;
 
         const whereClause: any = {};
+        
         if (difficulty) {
-            whereClause.difficulty = difficulty.toUpperCase()
-        };
+            whereClause.difficulty = difficulty.toUpperCase();
+        }
         if (company) {
-            whereClause.companies = { has: company }
+            whereClause.companies = { has: company };
         }
         if (topic) {
-            whereClause.topics = { has: topic }
-        };
+            whereClause.topics = { has: topic };
+        }
         if (search) {
-            whereClause.title = { contains: search, mode: "insensitive" }
-        };
+            whereClause.title = { contains: search, mode: "insensitive" };
+        }
 
-        const skip = (page - 1) * limit
+        //  Apply the Status Logic (Only if the user is logged in!)
+        if (status && userId) {
+            if (status === "SOLVED") {
+                whereClause.submission = { some: { userId: userId, verdict: "AC" } };
+            } else if (status === "UNSOLVED") {
+                whereClause.submission = { none: { userId: userId } };
+            } else if (status === "ATTEMPTED") {
+                whereClause.submission = { 
+                    some: { userId: userId },
+                    none: { userId: userId, verdict: "AC" } 
+                };
+            }
+        }
+
+        const skip = (page - 1) * limit;
+        
         const [questions, total] = await Promise.all([
             prisma.question.findMany({
                 where: whereClause,
@@ -46,7 +67,14 @@ const getAllQuestions = async (req: Request, res: Response) => {
                     difficulty: true,
                     topics: true,
                     companies: true,
-                    createdAt: true
+                    createdAt: true,
+                    //  Fetch user's submissions so the frontend can render the green checkmarks!
+                    ...(userId && {
+                        submission: {
+                            where: { userId: userId },
+                            select: { verdict: true }
+                        }
+                    })
                 }
             }),
             prisma.question.count({
@@ -67,7 +95,7 @@ const getAllQuestions = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({error: "Internal Server Error"})
+        return res.status(500).json({error: "Internal Server Error"});
     }
 }
 const getQuestionBySlug = async (req: Request, res: Response) => {
@@ -160,4 +188,46 @@ const submitCode = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
-export {getAllQuestions, getQuestionBySlug, submitCode}
+const getUserSubmissions = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+        // Fetch all submissions for the heatmap
+        const submissions = await prisma.submission.findMany({
+            where: { userId },
+            select: {
+                id: true,
+                verdict: true,
+                createdAt: true,
+                question: { select: { title: true, difficulty: true } }
+            },
+            orderBy: { createdAt: "desc" }
+        });
+
+        return res.status(200).json({ success: true, data: submissions });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+const getQuestionSubmissions = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        const { questionId } = req.params;
+        
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });
+        if(!questionId)return res.status(400).json({error: "QuestionId Not Present"});
+
+        const submissions = await prisma.submission.findMany({
+            where: { userId, questionId: questionId.toString() },
+            orderBy: { createdAt: "desc" }
+        });
+
+        return res.status(200).json({ success: true, data: submissions });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export {getQuestionSubmissions, getAllQuestions, getQuestionBySlug, submitCode, getUserSubmissions };
