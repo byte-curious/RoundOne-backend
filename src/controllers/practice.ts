@@ -3,6 +3,8 @@
 // get : practise/:slug => return that particular question
 import type { Request, Response } from "express";
 import { prisma } from "../utils/database/db.js";
+import { addPracticeSubmissionJob } from "../queue/execute.js";
+import { SubmitCodeSchema } from "../zod/index.js";
 
 
 const getAllQuestions = async (req: Request, res: Response) => {
@@ -85,8 +87,7 @@ const getQuestionBySlug = async (req: Request, res: Response) => {
                         isHidden: false
                     }
                 },
-                description: true
-
+                
             }
         });
 
@@ -104,5 +105,59 @@ const getQuestionBySlug = async (req: Request, res: Response) => {
         return res.status(500).json({error: "Internal Server Error"})
     }
 }
+const submitCode = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;  
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized. Please log in." });
+        }
 
-export {getAllQuestions, getQuestionBySlug}
+        const response = SubmitCodeSchema.safeParse(req.body);
+        if (!response.success) {
+            return res.status(400).json({ error: "Enter Valid Inputs", details: response.error.issues }); 
+        }
+
+        const { code, language, questionId, userApproach } = response.data;
+
+        //  Fetch ALL test cases (visible + hidden) for this question
+        const question = await prisma.question.findUnique({
+            where: {
+                id: questionId
+            },
+            select: {
+                testCases: true  
+            }
+        });
+
+        if (!question || question.testCases.length === 0) {
+            return res.status(404).json({ error: "Question not found or has no test cases" });
+        }
+
+        const jobData = {
+            userId,
+            questionId,
+            userApproach,
+            code,
+            language: language as any, 
+            testCases: question.testCases.map(tc => ({
+                input: tc.input,
+                expectedOutput: tc.expectedOutput
+            }))
+        };
+
+        //  Add to BullMQ Execution Queue
+        const jobId = await addPracticeSubmissionJob(jobData);
+
+        //  Instantly return the Job ID to the frontend!
+        return res.status(200).json({
+            success: true,
+            jobId: jobId,
+            message: "Code submitted for execution"
+        });
+
+    } catch (error) {
+        console.error("Submission Error:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export {getAllQuestions, getQuestionBySlug, submitCode}
