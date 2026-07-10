@@ -1,28 +1,40 @@
-import "dotenv/config.js" 
+import "dotenv/config.js"
 import express from "express"
 import cors from "cors"
-import {userRouter} from "./routes/user.js"
+import { userRouter } from "./routes/user.js"
 import cookieParser from "cookie-parser";
-import {resumeRouter} from "./routes/resume.js"
-import {interviewRouter} from "./routes/interview.js";
-import {codeRouter} from "./routes/code.js"
+import { resumeRouter } from "./routes/resume.js"
+import { interviewRouter } from "./routes/interview.js";
+import { codeRouter } from "./routes/code.js"
 import "./worker/execution.js"
 import "./worker/ai.js";
-import {progressRouter} from "./routes/progress.js"
-import {practiceRouter} from "./routes/practice.js"
-const app =  express()
+import { progressRouter } from "./routes/progress.js"
+import { practiceRouter } from "./routes/practice.js"
+const app = express()
 const PORT = process.env.PORT || 3000
+const allowedOrigins = [
+    "http://localhost:5173",        
+    "https://roundoneprep.me"
+];
+
 app.use(cors({
-     
-    origin : process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
+
+
 // express.json is used to parse the requesting body
 app.use(cookieParser());
 app.use(express.json());
 
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res) => {
     return res.json({
         message: "hollaaaaaaa..."
     })
@@ -34,4 +46,4 @@ app.use("/interview", interviewRouter)
 app.use("/code", codeRouter)
 app.use("/progress", progressRouter);
 app.use("/practice", practiceRouter)
-app.listen(PORT, ()=> console.log("server is running", PORT))
+app.listen(PORT, () => console.log("server is running", PORT))

@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs"
 import { generateOtpEmailTemplate } from "../utils/otpTemplate.js";
 import { generateWelcomeEmailTemplate } from "../utils/welcomeTemplate.js"
 import jwt from "jsonwebtoken";
+const isProd = process.env.NODE_ENV === "production";
 
 // import { Resend } from "resend";
 // import nodemailer from "nodemailer";
@@ -315,11 +316,11 @@ const login = async (req: Request, res: Response) => {
         // set cookie to http-only 
         res.cookie("token", generateJWT, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax",
             maxAge: jwtExpiry * 1000,
             path: "/"
-        })
+        });
         return res.status(200).json({
             "message": "Login Successfully", user: {
                 id: user.id,
@@ -338,8 +339,8 @@ const logout = async (req: Request, res: Response) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax",
             path: "/"
         });
         return res.status(200).json({ "message": "Logout successfully" });
@@ -411,7 +412,7 @@ const updatePassword = async (req: Request, res: Response) => {
 const forgotPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
-        const response = await resendOTP.safeParseAsync({ email });  
+        const response = await resendOTP.safeParseAsync({ email });
         if (!response.success) {
             return res.status(400).json({ error: "Enter valid email" });
         }
@@ -448,7 +449,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 const verifyResetOtp = async (req: Request, res: Response) => {
     try {
         const { otp, email } = req.body;
-        const response = await sendOTP.safeParseAsync({ otp, email }); 
+        const response = await sendOTP.safeParseAsync({ otp, email });
         if (!response.success) {
             return res.status(400).json({ error: "Enter Valid Input" });
         }
@@ -480,4 +481,4 @@ const verifyResetOtp = async (req: Request, res: Response) => {
     }
 };
 
-export { getMe, resendOtp, otpValidation, signup, login, logout,updatePassword, forgotPassword, verifyResetOtp}
+export { getMe, resendOtp, otpValidation, signup, login, logout, updatePassword, forgotPassword, verifyResetOtp }
