@@ -32,8 +32,14 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
         // we do this to prevent project from command injection
         fs.writeFileSync(textFilePath, response.data.text);
 
-        const command = `python3 -m edge_tts --voice "${voice}" --rate="${rate}" --pitch="${pitch}" -f "${textFilePath}" --write-media "${audioFilePath}"`;
-        
+        const edgeTts = "/home/azureuser/edge-tts-env/bin/edge-tts";
+
+        const command = `"${edgeTts}" \
+                        --voice "${voice}" \
+                        --rate="${rate}" \
+                        --pitch="${pitch}" \
+                        -f "${textFilePath}" \
+                        --write-media "${audioFilePath}"`;
         await execPromise(command);
 
         // read the generated audio file
