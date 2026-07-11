@@ -76,17 +76,32 @@ const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
 
 const uploadResume = async (req: Request, res: Response) => {
     try {
+         console.log("===== UPLOAD START =====");
+
+        console.log("User:", req.user);
+
         const file = req.file;
+        console.log("File:", file);
 
         if (!file) {
-            return res.status(400).json({ "error": "Resume file is required" })
-        };
-        
+            console.log("No file received");
+            return res.status(400).json({ error: "Resume file is required" });
+        }
+
+        console.log("Mime:", file.mimetype);
+        console.log("Size:", file.size);
+
         const parser = new PDFParse({ data: file.buffer });
+        console.log("Parser created");
+
         const pdfData = await parser.getText();
-        const extractedText = pdfData.text.trim();
+        console.log("PDF parsed");
+
         await parser.destroy();
 
+        console.log("Extracted length:", pdfData.text.length);
+        
+        const extractedText = pdfData.text.trim();
         if (extractedText.length < 50) {
             return res.status(400).json({ error: "Invalid File" });
         };
