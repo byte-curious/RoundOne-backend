@@ -319,7 +319,8 @@ const login = async (req: Request, res: Response) => {
             secure: isProd,
             sameSite: isProd ? "none" : "lax",
             maxAge: jwtExpiry * 1000,
-            path: "/"
+            path: "/",
+            domain: ".roundoneprep.me"
         });
         return res.status(200).json({
             "message": "Login Successfully", user: {
@@ -341,7 +342,8 @@ const logout = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: isProd,
             sameSite: isProd ? "none" : "lax",
-            path: "/"
+            path: "/",
+            domain: ".roundoneprep.me"
         });
         return res.status(200).json({ "message": "Logout successfully" });
 

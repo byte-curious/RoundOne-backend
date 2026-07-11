@@ -118,7 +118,7 @@ const uploadResume = async (req: Request, res: Response) => {
                 console.log("Could not delete old resume from cloudinary, but continuing:", deleteError);
             }
 
-            await prisma.resume.updateMany({
+            await prisma.resume.update({
                 data: {
                     extractedText: sanitizeExtractedText,
                     fileUrl: cloudinaryResult.secure_url,
