@@ -2,6 +2,7 @@ import { Worker } from "bullmq";
 import { redisConfig } from "../config/redis.js";
 import { prisma } from "../utils/database/db.js";
 import { runInDocker } from "../services/dockerRunner.js";
+import { runTestCases } from "../services/judge.js";
 import type { Verdict } from "../generated/prisma/enums.js";
 import { addAIFeedbackJob } from "../queue/execute.js";
 
@@ -11,8 +12,10 @@ const worker = new Worker("code-execution", async (job: any) => {
     if (job.name === "interview-execution") {
         console.log("Running Interview Code...");
         const { code, language, testCases } = job.data;
-        const result = await runInDocker({ code, language, stdin: testCases[0].input });
-        return { status: "completed", result };
+
+        const judgeResult = await runTestCases({ code, language, testCases });
+
+        return { status: "completed", result: { results: judgeResult.results } };
     }
 
     // LEETCODE PRACTICE ARENA LOGIC
