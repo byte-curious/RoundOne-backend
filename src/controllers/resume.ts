@@ -7,7 +7,8 @@ const require = createRequire(import.meta.url);
 const { PDFParse } = require("pdf-parse");
 
 import { prisma } from "../utils/database/db.js"
-
+import { resumeUploadCheckerPrompt } from "../utils/prompts/resumeUploadChecker.js";
+import { callGemini } from "../services/gemini.service.js";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
@@ -16,55 +17,55 @@ cloudinary.config({
 });
 
 function sanitizeResumeText(text: string): string {
-  let cleaned = text;
+    let cleaned = text;
 
-  // Remove email addresses
-  cleaned = cleaned.replace(
-    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
-    "[EMAIL REMOVED]"
-  );
+    // Remove email addresses
+    cleaned = cleaned.replace(
+        /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
+        "[EMAIL REMOVED]"
+    );
 
-  // Remove Indian & international phone numbers
-  cleaned = cleaned.replace(
-    /(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,5}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,6}\b/g,
-    "[PHONE REMOVED]"
-  );
+    // Remove Indian & international phone numbers
+    cleaned = cleaned.replace(
+        /(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,5}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,6}\b/g,
+        "[PHONE REMOVED]"
+    );
 
-  // Remove URLs
-  cleaned = cleaned.replace(
-    /\b(?:https?:\/\/|www\.)\S+\b/g,
-    "[URL REMOVED]"
-  );
+    // Remove URLs
+    cleaned = cleaned.replace(
+        /\b(?:https?:\/\/|www\.)\S+\b/g,
+        "[URL REMOVED]"
+    );
 
-  // Remove LinkedIn URLs
-  cleaned = cleaned.replace(
-    /linkedin\.com\/\S+/gi,
-    "[LINKEDIN REMOVED]"
-  );
+    // Remove LinkedIn URLs
+    cleaned = cleaned.replace(
+        /linkedin\.com\/\S+/gi,
+        "[LINKEDIN REMOVED]"
+    );
 
-  // Remove GitHub URLs
-  cleaned = cleaned.replace(
-    /github\.com\/\S+/gi,
-    "[GITHUB REMOVED]"
-  );
+    // Remove GitHub URLs
+    cleaned = cleaned.replace(
+        /github\.com\/\S+/gi,
+        "[GITHUB REMOVED]"
+    );
 
-  // Remove common Indian PIN codes
-  cleaned = cleaned.replace(/\b\d{6}\b/g, "[PIN REMOVED]");
+    // Remove common Indian PIN codes
+    cleaned = cleaned.replace(/\b\d{6}\b/g, "[PIN REMOVED]");
 
-  // Remove multiple separators left behind
-  cleaned = cleaned.replace(/\s*\|\s*\|\s*/g, " | ");
+    // Remove multiple separators left behind
+    cleaned = cleaned.replace(/\s*\|\s*\|\s*/g, " | ");
 
-  // Remove empty lines
-  cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
+    // Remove empty lines
+    cleaned = cleaned.replace(/\n{3,}/g, "\n\n");
 
-  return cleaned.trim();
+    return cleaned.trim();
 }
 
 
 const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "auto", folder: "resumes", timeout: 60000},
+            { resource_type: "auto", folder: "resumes", timeout: 60000 },
             (error, result) => {
                 if (error) reject(error)
                 else resolve(result)
@@ -76,31 +77,30 @@ const uploadToCloudinary = (buffer: Buffer): Promise<any> => {
 
 const uploadResume = async (req: Request, res: Response) => {
     try {
-         console.log("===== UPLOAD START =====");
 
-        console.log("User:", req.user);
+        // console.log("User:", req.user);
 
         const file = req.file;
-        console.log("File:", file);
+        // console.log("File:", file);
 
         if (!file) {
-            console.log("No file received");
+            // console.log("No file received");
             return res.status(400).json({ error: "Resume file is required" });
         }
 
-        console.log("Mime:", file.mimetype);
-        console.log("Size:", file.size);
+        // console.log("Mime:", file.mimetype);
+        // console.log("Size:", file.size);
 
         const parser = new PDFParse({ data: file.buffer });
-        console.log("Parser created");
+        // console.log("Parser created");
 
         const pdfData = await parser.getText();
-        console.log("PDF parsed");
+        // console.log("PDF parsed");
 
         await parser.destroy();
 
-        console.log("Extracted length:", pdfData.text.length);
-        
+        // console.log("Extracted length:", pdfData.text.length);
+
         const extractedText = pdfData.text.trim();
         if (extractedText.length < 50) {
             return res.status(400).json({ error: "Invalid File" });
@@ -111,7 +111,18 @@ const uploadResume = async (req: Request, res: Response) => {
         const sanitizeExtractedText = sanitizeResumeText(extractedText);
         // console.log(sanitizeExtractedText);
 
-        
+        // checking is uploaded resume is actually a resume -> yadi nhi h to yahi pe error de do
+        const resumeCheckerRaw = await callGemini(resumeUploadCheckerPrompt(sanitizeExtractedText));
+
+        if(!resumeCheckerRaw){
+            return res.status(500).json({error: "Failed to parse"});
+        }
+        const resumeCheckerResult = JSON.parse(resumeCheckerRaw.replace(/```json|```/g, "").trim())
+
+        if(!resumeCheckerResult.success){
+            return res.status(400).json({error: "Enter a valid resume"});
+        }
+
         // check whether the resume is present in user'db 
         const isExisted = await prisma.resume.findUnique({
             where: {
@@ -125,7 +136,7 @@ const uploadResume = async (req: Request, res: Response) => {
         // if existed delete the previous file
         if (isExisted) {
 
-             try {
+            try {
                 await cloudinary.uploader.destroy(isExisted.publicId, {
                     resource_type: "image"
                 });
