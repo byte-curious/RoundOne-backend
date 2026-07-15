@@ -70,4 +70,9 @@ const SubmitCodeSchema = z.object({
     questionId: z.string(),
     userApproach: z.string().optional()
 });
-export { SubmitCodeSchema, PracticeSubmissionSchema, ExecuteSchema, TestCaseSchema, supportedLanguages, sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }
+const BulletWriter = z.object({
+    techStack: z.string(),
+    brainDump: z.string(),
+    userFeedback : z.string().optional()
+})
+export {BulletWriter, SubmitCodeSchema, PracticeSubmissionSchema, ExecuteSchema, TestCaseSchema, supportedLanguages, sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }

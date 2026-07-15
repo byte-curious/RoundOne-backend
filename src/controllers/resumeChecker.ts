@@ -4,7 +4,9 @@ const require = createRequire(import.meta.url);
 const { PDFParse } = require("pdf-parse");
 import { buildStrictResumePrompt } from "../utils/prompts/atsChecker.prompt.js"
 import { callGemini } from "../services/gemini.service.js";
-
+import { BulletWriter } from "../zod/index.js";
+import { buildBulletPrompt } from "../utils/prompts/bulletWriter.prompt.js";
+import { prisma } from "../utils/database/db.js"
 
 export const atsResumeChecker = async (req: Request, res: Response) => {
     try {
@@ -38,5 +40,65 @@ export const atsResumeChecker = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ "error": "Internal Server Error" });
+    }
+}
+export const enhanceBullets = async (req: Request, res: Response) => {
+    try {
+        const { techStack, brainDump, userFeedback } = req.body;
+
+        const response = BulletWriter.safeParse({ techStack, brainDump, userFeedback });
+
+        if (!response.success) {
+            return res.status(400).json({ error: "Provide Valid Inputs" });
+        }
+
+        const bulletWritePrompt = buildBulletPrompt(
+            {
+                techStack: response.data.techStack,
+                brainDump: response.data.brainDump,
+                userFeedback: response.data.userFeedback
+            }
+        );
+
+        const aiResponse = await callGemini(bulletWritePrompt);
+
+        if (!aiResponse) {
+            return res.status(500).json({ error: "AI service unavailable" });
+        }
+
+        // safe parsing 
+        let bulletWriteResult;
+        try {
+            const cleanedJson = aiResponse.replace(/```json|```/g, "").trim();
+            bulletWriteResult = JSON.parse(cleanedJson);
+
+            if (!bulletWriteResult.status || !['needs_info', 'success'].includes(bulletWriteResult.status)) {
+                throw new Error("Invalid AI response schema");
+            }
+            
+        } catch (parseError) {
+            console.error("Failed to parse Gemini response:", aiResponse);
+            return res.status(500).json({ error: "AI returned an invalid format. Please try again." });
+        }
+
+        return res.status(200).json(bulletWriteResult);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+export const trackDownload = async (req: Request, res: Response) => {
+    try {
+        const id = req.user!.id;
+        await prisma.user.update({
+            where: { id },
+            data: { resumeDownloads: { increment: 1 } }
+        });
+        return res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Failed to track download:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 }
