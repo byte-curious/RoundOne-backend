@@ -61,7 +61,8 @@ export const ModelName = {
   Question: 'Question',
   TestCase: 'TestCase',
   Submission: 'Submission',
-  POD: 'POD'
+  POD: 'POD',
+  DSARoundSession: 'DSARoundSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -208,7 +209,8 @@ export const SubmissionScalarFieldEnum = {
   createdAt: 'createdAt',
   timeComplexity: 'timeComplexity',
   spaceComplexity: 'spaceComplexity',
-  aiFeedback: 'aiFeedback'
+  aiFeedback: 'aiFeedback',
+  dSARoundSessionId: 'dSARoundSessionId'
 } as const
 
 export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
@@ -221,6 +223,19 @@ export const PODScalarFieldEnum = {
 } as const
 
 export type PODScalarFieldEnum = (typeof PODScalarFieldEnum)[keyof typeof PODScalarFieldEnum]
+
+
+export const DSARoundSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  company: 'company',
+  status: 'status',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  score: 'score'
+} as const
+
+export type DSARoundSessionScalarFieldEnum = (typeof DSARoundSessionScalarFieldEnum)[keyof typeof DSARoundSessionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -236,6 +236,7 @@ export type UserWhereInput = {
   sessions?: Prisma.SessionListRelationFilter
   progress?: Prisma.ProgressListRelationFilter
   submission?: Prisma.SubmissionListRelationFilter
+  dsaRoundSession?: Prisma.DSARoundSessionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -250,6 +251,7 @@ export type UserOrderByWithRelationInput = {
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   progress?: Prisma.ProgressOrderByRelationAggregateInput
   submission?: Prisma.SubmissionOrderByRelationAggregateInput
+  dsaRoundSession?: Prisma.DSARoundSessionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -267,6 +269,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sessions?: Prisma.SessionListRelationFilter
   progress?: Prisma.ProgressListRelationFilter
   submission?: Prisma.SubmissionListRelationFilter
+  dsaRoundSession?: Prisma.DSARoundSessionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -309,6 +312,7 @@ export type UserCreateInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -323,6 +327,7 @@ export type UserUncheckedCreateInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -337,6 +342,7 @@ export type UserUpdateInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -351,6 +357,7 @@ export type UserUncheckedUpdateInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -498,6 +505,20 @@ export type UserUpdateOneRequiredWithoutSubmissionNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSubmissionInput, Prisma.UserUpdateWithoutSubmissionInput>, Prisma.UserUncheckedUpdateWithoutSubmissionInput>
 }
 
+export type UserCreateNestedOneWithoutDsaRoundSessionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDsaRoundSessionInput, Prisma.UserUncheckedCreateWithoutDsaRoundSessionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDsaRoundSessionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDsaRoundSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDsaRoundSessionInput, Prisma.UserUncheckedCreateWithoutDsaRoundSessionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDsaRoundSessionInput
+  upsert?: Prisma.UserUpsertWithoutDsaRoundSessionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDsaRoundSessionInput, Prisma.UserUpdateWithoutDsaRoundSessionInput>, Prisma.UserUncheckedUpdateWithoutDsaRoundSessionInput>
+}
+
 export type UserCreateWithoutResumeInput = {
   id?: string
   name: string
@@ -509,6 +530,7 @@ export type UserCreateWithoutResumeInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumeInput = {
@@ -522,6 +544,7 @@ export type UserUncheckedCreateWithoutResumeInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumeInput = {
@@ -551,6 +574,7 @@ export type UserUpdateWithoutResumeInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumeInput = {
@@ -564,6 +588,7 @@ export type UserUncheckedUpdateWithoutResumeInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -577,6 +602,7 @@ export type UserCreateWithoutSessionsInput = {
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
   progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -590,6 +616,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -619,6 +646,7 @@ export type UserUpdateWithoutSessionsInput = {
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
   progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -632,6 +660,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProgressInput = {
@@ -645,6 +674,7 @@ export type UserCreateWithoutProgressInput = {
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProgressInput = {
@@ -658,6 +688,7 @@ export type UserUncheckedCreateWithoutProgressInput = {
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProgressInput = {
@@ -687,6 +718,7 @@ export type UserUpdateWithoutProgressInput = {
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProgressInput = {
@@ -700,6 +732,7 @@ export type UserUncheckedUpdateWithoutProgressInput = {
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubmissionInput = {
@@ -713,6 +746,7 @@ export type UserCreateWithoutSubmissionInput = {
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubmissionInput = {
@@ -726,6 +760,7 @@ export type UserUncheckedCreateWithoutSubmissionInput = {
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubmissionInput = {
@@ -755,6 +790,7 @@ export type UserUpdateWithoutSubmissionInput = {
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubmissionInput = {
@@ -768,6 +804,79 @@ export type UserUncheckedUpdateWithoutSubmissionInput = {
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
+  dsaRoundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDsaRoundSessionInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resumeDownloads?: number
+  resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressCreateNestedManyWithoutUserInput
+  submission?: Prisma.SubmissionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDsaRoundSessionInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resumeDownloads?: number
+  resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  progress?: Prisma.ProgressUncheckedCreateNestedManyWithoutUserInput
+  submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDsaRoundSessionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDsaRoundSessionInput, Prisma.UserUncheckedCreateWithoutDsaRoundSessionInput>
+}
+
+export type UserUpsertWithoutDsaRoundSessionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDsaRoundSessionInput, Prisma.UserUncheckedUpdateWithoutDsaRoundSessionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDsaRoundSessionInput, Prisma.UserUncheckedCreateWithoutDsaRoundSessionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDsaRoundSessionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDsaRoundSessionInput, Prisma.UserUncheckedUpdateWithoutDsaRoundSessionInput>
+}
+
+export type UserUpdateWithoutDsaRoundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeDownloads?: Prisma.IntFieldUpdateOperationsInput | number
+  resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUpdateManyWithoutUserNestedInput
+  submission?: Prisma.SubmissionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDsaRoundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumeDownloads?: Prisma.IntFieldUpdateOperationsInput | number
+  resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  progress?: Prisma.ProgressUncheckedUpdateManyWithoutUserNestedInput
+  submission?: Prisma.SubmissionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -779,12 +888,14 @@ export type UserCountOutputType = {
   sessions: number
   progress: number
   submission: number
+  dsaRoundSession: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   progress?: boolean | UserCountOutputTypeCountProgressArgs
   submission?: boolean | UserCountOutputTypeCountSubmissionArgs
+  dsaRoundSession?: boolean | UserCountOutputTypeCountDsaRoundSessionArgs
 }
 
 /**
@@ -818,6 +929,13 @@ export type UserCountOutputTypeCountSubmissionArgs<ExtArgs extends runtime.Types
   where?: Prisma.SubmissionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDsaRoundSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DSARoundSessionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -831,6 +949,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   progress?: boolean | Prisma.User$progressArgs<ExtArgs>
   submission?: boolean | Prisma.User$submissionArgs<ExtArgs>
+  dsaRoundSession?: boolean | Prisma.User$dsaRoundSessionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -870,6 +989,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   progress?: boolean | Prisma.User$progressArgs<ExtArgs>
   submission?: boolean | Prisma.User$submissionArgs<ExtArgs>
+  dsaRoundSession?: boolean | Prisma.User$dsaRoundSessionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -882,6 +1002,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     progress: Prisma.$ProgressPayload<ExtArgs>[]
     submission: Prisma.$SubmissionPayload<ExtArgs>[]
+    dsaRoundSession: Prisma.$DSARoundSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1289,6 +1410,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   progress<T extends Prisma.User$progressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$progressArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProgressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   submission<T extends Prisma.User$submissionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$submissionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dsaRoundSession<T extends Prisma.User$dsaRoundSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dsaRoundSessionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DSARoundSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1806,6 +1928,30 @@ export type User$submissionArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.SubmissionScalarFieldEnum | Prisma.SubmissionScalarFieldEnum[]
+}
+
+/**
+ * User.dsaRoundSession
+ */
+export type User$dsaRoundSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DSARoundSession
+   */
+  select?: Prisma.DSARoundSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DSARoundSession
+   */
+  omit?: Prisma.DSARoundSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DSARoundSessionInclude<ExtArgs> | null
+  where?: Prisma.DSARoundSessionWhereInput
+  orderBy?: Prisma.DSARoundSessionOrderByWithRelationInput | Prisma.DSARoundSessionOrderByWithRelationInput[]
+  cursor?: Prisma.DSARoundSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DSARoundSessionScalarFieldEnum | Prisma.DSARoundSessionScalarFieldEnum[]
 }
 
 /**

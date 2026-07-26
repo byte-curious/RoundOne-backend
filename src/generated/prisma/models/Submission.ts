@@ -36,6 +36,7 @@ export type SubmissionMinAggregateOutputType = {
   timeComplexity: string | null
   spaceComplexity: string | null
   aiFeedback: string | null
+  dSARoundSessionId: string | null
 }
 
 export type SubmissionMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type SubmissionMaxAggregateOutputType = {
   timeComplexity: string | null
   spaceComplexity: string | null
   aiFeedback: string | null
+  dSARoundSessionId: string | null
 }
 
 export type SubmissionCountAggregateOutputType = {
@@ -64,6 +66,7 @@ export type SubmissionCountAggregateOutputType = {
   timeComplexity: number
   spaceComplexity: number
   aiFeedback: number
+  dSARoundSessionId: number
   _all: number
 }
 
@@ -80,6 +83,7 @@ export type SubmissionMinAggregateInputType = {
   timeComplexity?: true
   spaceComplexity?: true
   aiFeedback?: true
+  dSARoundSessionId?: true
 }
 
 export type SubmissionMaxAggregateInputType = {
@@ -94,6 +98,7 @@ export type SubmissionMaxAggregateInputType = {
   timeComplexity?: true
   spaceComplexity?: true
   aiFeedback?: true
+  dSARoundSessionId?: true
 }
 
 export type SubmissionCountAggregateInputType = {
@@ -108,6 +113,7 @@ export type SubmissionCountAggregateInputType = {
   timeComplexity?: true
   spaceComplexity?: true
   aiFeedback?: true
+  dSARoundSessionId?: true
   _all?: true
 }
 
@@ -195,6 +201,7 @@ export type SubmissionGroupByOutputType = {
   timeComplexity: string | null
   spaceComplexity: string | null
   aiFeedback: string | null
+  dSARoundSessionId: string | null
   _count: SubmissionCountAggregateOutputType | null
   _min: SubmissionMinAggregateOutputType | null
   _max: SubmissionMaxAggregateOutputType | null
@@ -230,8 +237,10 @@ export type SubmissionWhereInput = {
   timeComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   spaceComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   aiFeedback?: Prisma.StringNullableFilter<"Submission"> | string | null
+  dSARoundSessionId?: Prisma.StringNullableFilter<"Submission"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   question?: Prisma.XOR<Prisma.QuestionScalarRelationFilter, Prisma.QuestionWhereInput>
+  dsaroundSession?: Prisma.XOR<Prisma.DSARoundSessionNullableScalarRelationFilter, Prisma.DSARoundSessionWhereInput> | null
 }
 
 export type SubmissionOrderByWithRelationInput = {
@@ -246,8 +255,10 @@ export type SubmissionOrderByWithRelationInput = {
   timeComplexity?: Prisma.SortOrderInput | Prisma.SortOrder
   spaceComplexity?: Prisma.SortOrderInput | Prisma.SortOrder
   aiFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  dSARoundSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   question?: Prisma.QuestionOrderByWithRelationInput
+  dsaroundSession?: Prisma.DSARoundSessionOrderByWithRelationInput
 }
 
 export type SubmissionWhereUniqueInput = Prisma.AtLeast<{
@@ -265,8 +276,10 @@ export type SubmissionWhereUniqueInput = Prisma.AtLeast<{
   timeComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   spaceComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   aiFeedback?: Prisma.StringNullableFilter<"Submission"> | string | null
+  dSARoundSessionId?: Prisma.StringNullableFilter<"Submission"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   question?: Prisma.XOR<Prisma.QuestionScalarRelationFilter, Prisma.QuestionWhereInput>
+  dsaroundSession?: Prisma.XOR<Prisma.DSARoundSessionNullableScalarRelationFilter, Prisma.DSARoundSessionWhereInput> | null
 }, "id">
 
 export type SubmissionOrderByWithAggregationInput = {
@@ -281,6 +294,7 @@ export type SubmissionOrderByWithAggregationInput = {
   timeComplexity?: Prisma.SortOrderInput | Prisma.SortOrder
   spaceComplexity?: Prisma.SortOrderInput | Prisma.SortOrder
   aiFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  dSARoundSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SubmissionCountOrderByAggregateInput
   _max?: Prisma.SubmissionMaxOrderByAggregateInput
   _min?: Prisma.SubmissionMinOrderByAggregateInput
@@ -301,6 +315,7 @@ export type SubmissionScalarWhereWithAggregatesInput = {
   timeComplexity?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
   spaceComplexity?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
   aiFeedback?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
+  dSARoundSessionId?: Prisma.StringNullableWithAggregatesFilter<"Submission"> | string | null
 }
 
 export type SubmissionCreateInput = {
@@ -315,6 +330,7 @@ export type SubmissionCreateInput = {
   aiFeedback?: string | null
   user: Prisma.UserCreateNestedOneWithoutSubmissionInput
   question: Prisma.QuestionCreateNestedOneWithoutSubmissionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedOneWithoutSubmissionsInput
 }
 
 export type SubmissionUncheckedCreateInput = {
@@ -329,6 +345,7 @@ export type SubmissionUncheckedCreateInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionUpdateInput = {
@@ -343,6 +360,7 @@ export type SubmissionUpdateInput = {
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutSubmissionNestedInput
   question?: Prisma.QuestionUpdateOneRequiredWithoutSubmissionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateOneWithoutSubmissionsNestedInput
 }
 
 export type SubmissionUncheckedUpdateInput = {
@@ -357,6 +375,7 @@ export type SubmissionUncheckedUpdateInput = {
   timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubmissionCreateManyInput = {
@@ -371,6 +390,7 @@ export type SubmissionCreateManyInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionUpdateManyMutationInput = {
@@ -397,6 +417,7 @@ export type SubmissionUncheckedUpdateManyInput = {
   timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubmissionListRelationFilter = {
@@ -421,6 +442,7 @@ export type SubmissionCountOrderByAggregateInput = {
   timeComplexity?: Prisma.SortOrder
   spaceComplexity?: Prisma.SortOrder
   aiFeedback?: Prisma.SortOrder
+  dSARoundSessionId?: Prisma.SortOrder
 }
 
 export type SubmissionMaxOrderByAggregateInput = {
@@ -435,6 +457,7 @@ export type SubmissionMaxOrderByAggregateInput = {
   timeComplexity?: Prisma.SortOrder
   spaceComplexity?: Prisma.SortOrder
   aiFeedback?: Prisma.SortOrder
+  dSARoundSessionId?: Prisma.SortOrder
 }
 
 export type SubmissionMinOrderByAggregateInput = {
@@ -449,6 +472,7 @@ export type SubmissionMinOrderByAggregateInput = {
   timeComplexity?: Prisma.SortOrder
   spaceComplexity?: Prisma.SortOrder
   aiFeedback?: Prisma.SortOrder
+  dSARoundSessionId?: Prisma.SortOrder
 }
 
 export type SubmissionCreateNestedManyWithoutUserInput = {
@@ -543,6 +567,48 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
+export type SubmissionCreateNestedManyWithoutDsaroundSessionInput = {
+  create?: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.SubmissionCreateWithoutDsaroundSessionInput[] | Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput | Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput[]
+  createMany?: Prisma.SubmissionCreateManyDsaroundSessionInputEnvelope
+  connect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+}
+
+export type SubmissionUncheckedCreateNestedManyWithoutDsaroundSessionInput = {
+  create?: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.SubmissionCreateWithoutDsaroundSessionInput[] | Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput | Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput[]
+  createMany?: Prisma.SubmissionCreateManyDsaroundSessionInputEnvelope
+  connect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+}
+
+export type SubmissionUpdateManyWithoutDsaroundSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.SubmissionCreateWithoutDsaroundSessionInput[] | Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput | Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput[]
+  upsert?: Prisma.SubmissionUpsertWithWhereUniqueWithoutDsaroundSessionInput | Prisma.SubmissionUpsertWithWhereUniqueWithoutDsaroundSessionInput[]
+  createMany?: Prisma.SubmissionCreateManyDsaroundSessionInputEnvelope
+  set?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  disconnect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  delete?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  connect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  update?: Prisma.SubmissionUpdateWithWhereUniqueWithoutDsaroundSessionInput | Prisma.SubmissionUpdateWithWhereUniqueWithoutDsaroundSessionInput[]
+  updateMany?: Prisma.SubmissionUpdateManyWithWhereWithoutDsaroundSessionInput | Prisma.SubmissionUpdateManyWithWhereWithoutDsaroundSessionInput[]
+  deleteMany?: Prisma.SubmissionScalarWhereInput | Prisma.SubmissionScalarWhereInput[]
+}
+
+export type SubmissionUncheckedUpdateManyWithoutDsaroundSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.SubmissionCreateWithoutDsaroundSessionInput[] | Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput | Prisma.SubmissionCreateOrConnectWithoutDsaroundSessionInput[]
+  upsert?: Prisma.SubmissionUpsertWithWhereUniqueWithoutDsaroundSessionInput | Prisma.SubmissionUpsertWithWhereUniqueWithoutDsaroundSessionInput[]
+  createMany?: Prisma.SubmissionCreateManyDsaroundSessionInputEnvelope
+  set?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  disconnect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  delete?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  connect?: Prisma.SubmissionWhereUniqueInput | Prisma.SubmissionWhereUniqueInput[]
+  update?: Prisma.SubmissionUpdateWithWhereUniqueWithoutDsaroundSessionInput | Prisma.SubmissionUpdateWithWhereUniqueWithoutDsaroundSessionInput[]
+  updateMany?: Prisma.SubmissionUpdateManyWithWhereWithoutDsaroundSessionInput | Prisma.SubmissionUpdateManyWithWhereWithoutDsaroundSessionInput[]
+  deleteMany?: Prisma.SubmissionScalarWhereInput | Prisma.SubmissionScalarWhereInput[]
+}
+
 export type SubmissionCreateWithoutUserInput = {
   id?: string
   code: string
@@ -554,6 +620,7 @@ export type SubmissionCreateWithoutUserInput = {
   spaceComplexity?: string | null
   aiFeedback?: string | null
   question: Prisma.QuestionCreateNestedOneWithoutSubmissionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedOneWithoutSubmissionsInput
 }
 
 export type SubmissionUncheckedCreateWithoutUserInput = {
@@ -567,6 +634,7 @@ export type SubmissionUncheckedCreateWithoutUserInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionCreateOrConnectWithoutUserInput = {
@@ -610,6 +678,7 @@ export type SubmissionScalarWhereInput = {
   timeComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   spaceComplexity?: Prisma.StringNullableFilter<"Submission"> | string | null
   aiFeedback?: Prisma.StringNullableFilter<"Submission"> | string | null
+  dSARoundSessionId?: Prisma.StringNullableFilter<"Submission"> | string | null
 }
 
 export type SubmissionCreateWithoutQuestionInput = {
@@ -623,6 +692,7 @@ export type SubmissionCreateWithoutQuestionInput = {
   spaceComplexity?: string | null
   aiFeedback?: string | null
   user: Prisma.UserCreateNestedOneWithoutSubmissionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedOneWithoutSubmissionsInput
 }
 
 export type SubmissionUncheckedCreateWithoutQuestionInput = {
@@ -636,6 +706,7 @@ export type SubmissionUncheckedCreateWithoutQuestionInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionCreateOrConnectWithoutQuestionInput = {
@@ -664,6 +735,60 @@ export type SubmissionUpdateManyWithWhereWithoutQuestionInput = {
   data: Prisma.XOR<Prisma.SubmissionUpdateManyMutationInput, Prisma.SubmissionUncheckedUpdateManyWithoutQuestionInput>
 }
 
+export type SubmissionCreateWithoutDsaroundSessionInput = {
+  id?: string
+  code: string
+  language: string
+  verdict: $Enums.Verdict
+  userApproach?: string | null
+  createdAt?: Date | string
+  timeComplexity?: string | null
+  spaceComplexity?: string | null
+  aiFeedback?: string | null
+  user: Prisma.UserCreateNestedOneWithoutSubmissionInput
+  question: Prisma.QuestionCreateNestedOneWithoutSubmissionInput
+}
+
+export type SubmissionUncheckedCreateWithoutDsaroundSessionInput = {
+  id?: string
+  questionId: string
+  userId: string
+  code: string
+  language: string
+  verdict: $Enums.Verdict
+  userApproach?: string | null
+  createdAt?: Date | string
+  timeComplexity?: string | null
+  spaceComplexity?: string | null
+  aiFeedback?: string | null
+}
+
+export type SubmissionCreateOrConnectWithoutDsaroundSessionInput = {
+  where: Prisma.SubmissionWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput>
+}
+
+export type SubmissionCreateManyDsaroundSessionInputEnvelope = {
+  data: Prisma.SubmissionCreateManyDsaroundSessionInput | Prisma.SubmissionCreateManyDsaroundSessionInput[]
+  skipDuplicates?: boolean
+}
+
+export type SubmissionUpsertWithWhereUniqueWithoutDsaroundSessionInput = {
+  where: Prisma.SubmissionWhereUniqueInput
+  update: Prisma.XOR<Prisma.SubmissionUpdateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedUpdateWithoutDsaroundSessionInput>
+  create: Prisma.XOR<Prisma.SubmissionCreateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedCreateWithoutDsaroundSessionInput>
+}
+
+export type SubmissionUpdateWithWhereUniqueWithoutDsaroundSessionInput = {
+  where: Prisma.SubmissionWhereUniqueInput
+  data: Prisma.XOR<Prisma.SubmissionUpdateWithoutDsaroundSessionInput, Prisma.SubmissionUncheckedUpdateWithoutDsaroundSessionInput>
+}
+
+export type SubmissionUpdateManyWithWhereWithoutDsaroundSessionInput = {
+  where: Prisma.SubmissionScalarWhereInput
+  data: Prisma.XOR<Prisma.SubmissionUpdateManyMutationInput, Prisma.SubmissionUncheckedUpdateManyWithoutDsaroundSessionInput>
+}
+
 export type SubmissionCreateManyUserInput = {
   id?: string
   questionId: string
@@ -675,6 +800,7 @@ export type SubmissionCreateManyUserInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionUpdateWithoutUserInput = {
@@ -688,6 +814,7 @@ export type SubmissionUpdateWithoutUserInput = {
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   question?: Prisma.QuestionUpdateOneRequiredWithoutSubmissionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateOneWithoutSubmissionsNestedInput
 }
 
 export type SubmissionUncheckedUpdateWithoutUserInput = {
@@ -701,6 +828,7 @@ export type SubmissionUncheckedUpdateWithoutUserInput = {
   timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubmissionUncheckedUpdateManyWithoutUserInput = {
@@ -714,6 +842,7 @@ export type SubmissionUncheckedUpdateManyWithoutUserInput = {
   timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubmissionCreateManyQuestionInput = {
@@ -727,6 +856,7 @@ export type SubmissionCreateManyQuestionInput = {
   timeComplexity?: string | null
   spaceComplexity?: string | null
   aiFeedback?: string | null
+  dSARoundSessionId?: string | null
 }
 
 export type SubmissionUpdateWithoutQuestionInput = {
@@ -740,6 +870,7 @@ export type SubmissionUpdateWithoutQuestionInput = {
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutSubmissionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateOneWithoutSubmissionsNestedInput
 }
 
 export type SubmissionUncheckedUpdateWithoutQuestionInput = {
@@ -753,10 +884,68 @@ export type SubmissionUncheckedUpdateWithoutQuestionInput = {
   timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubmissionUncheckedUpdateManyWithoutQuestionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  verdict?: Prisma.EnumVerdictFieldUpdateOperationsInput | $Enums.Verdict
+  userApproach?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dSARoundSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type SubmissionCreateManyDsaroundSessionInput = {
+  id?: string
+  questionId: string
+  userId: string
+  code: string
+  language: string
+  verdict: $Enums.Verdict
+  userApproach?: string | null
+  createdAt?: Date | string
+  timeComplexity?: string | null
+  spaceComplexity?: string | null
+  aiFeedback?: string | null
+}
+
+export type SubmissionUpdateWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  verdict?: Prisma.EnumVerdictFieldUpdateOperationsInput | $Enums.Verdict
+  userApproach?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutSubmissionNestedInput
+  question?: Prisma.QuestionUpdateOneRequiredWithoutSubmissionNestedInput
+}
+
+export type SubmissionUncheckedUpdateWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  verdict?: Prisma.EnumVerdictFieldUpdateOperationsInput | $Enums.Verdict
+  userApproach?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timeComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  spaceComplexity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type SubmissionUncheckedUpdateManyWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  questionId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   language?: Prisma.StringFieldUpdateOperationsInput | string
@@ -782,8 +971,10 @@ export type SubmissionSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   timeComplexity?: boolean
   spaceComplexity?: boolean
   aiFeedback?: boolean
+  dSARoundSessionId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }, ExtArgs["result"]["submission"]>
 
 export type SubmissionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -798,8 +989,10 @@ export type SubmissionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   timeComplexity?: boolean
   spaceComplexity?: boolean
   aiFeedback?: boolean
+  dSARoundSessionId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }, ExtArgs["result"]["submission"]>
 
 export type SubmissionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -814,8 +1007,10 @@ export type SubmissionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   timeComplexity?: boolean
   spaceComplexity?: boolean
   aiFeedback?: boolean
+  dSARoundSessionId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }, ExtArgs["result"]["submission"]>
 
 export type SubmissionSelectScalar = {
@@ -830,20 +1025,24 @@ export type SubmissionSelectScalar = {
   timeComplexity?: boolean
   spaceComplexity?: boolean
   aiFeedback?: boolean
+  dSARoundSessionId?: boolean
 }
 
-export type SubmissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "userId" | "code" | "language" | "verdict" | "userApproach" | "createdAt" | "timeComplexity" | "spaceComplexity" | "aiFeedback", ExtArgs["result"]["submission"]>
+export type SubmissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "questionId" | "userId" | "code" | "language" | "verdict" | "userApproach" | "createdAt" | "timeComplexity" | "spaceComplexity" | "aiFeedback" | "dSARoundSessionId", ExtArgs["result"]["submission"]>
 export type SubmissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }
 export type SubmissionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }
 export type SubmissionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   question?: boolean | Prisma.QuestionDefaultArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Submission$dsaroundSessionArgs<ExtArgs>
 }
 
 export type $SubmissionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -851,6 +1050,7 @@ export type $SubmissionPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     question: Prisma.$QuestionPayload<ExtArgs>
+    dsaroundSession: Prisma.$DSARoundSessionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -864,6 +1064,7 @@ export type $SubmissionPayload<ExtArgs extends runtime.Types.Extensions.Internal
     timeComplexity: string | null
     spaceComplexity: string | null
     aiFeedback: string | null
+    dSARoundSessionId: string | null
   }, ExtArgs["result"]["submission"]>
   composites: {}
 }
@@ -1260,6 +1461,7 @@ export interface Prisma__SubmissionClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   question<T extends Prisma.QuestionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.QuestionDefaultArgs<ExtArgs>>): Prisma.Prisma__QuestionClient<runtime.Types.Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  dsaroundSession<T extends Prisma.Submission$dsaroundSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Submission$dsaroundSessionArgs<ExtArgs>>): Prisma.Prisma__DSARoundSessionClient<runtime.Types.Result.GetResult<Prisma.$DSARoundSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1300,6 +1502,7 @@ export interface SubmissionFieldRefs {
   readonly timeComplexity: Prisma.FieldRef<"Submission", 'String'>
   readonly spaceComplexity: Prisma.FieldRef<"Submission", 'String'>
   readonly aiFeedback: Prisma.FieldRef<"Submission", 'String'>
+  readonly dSARoundSessionId: Prisma.FieldRef<"Submission", 'String'>
 }
     
 
@@ -1698,6 +1901,25 @@ export type SubmissionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Submissions to delete.
    */
   limit?: number
+}
+
+/**
+ * Submission.dsaroundSession
+ */
+export type Submission$dsaroundSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DSARoundSession
+   */
+  select?: Prisma.DSARoundSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DSARoundSession
+   */
+  omit?: Prisma.DSARoundSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DSARoundSessionInclude<ExtArgs> | null
+  where?: Prisma.DSARoundSessionWhereInput
 }
 
 /**

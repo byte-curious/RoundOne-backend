@@ -96,3 +96,8 @@ export type Submission = Prisma.SubmissionModel
  * 
  */
 export type POD = Prisma.PODModel
+/**
+ * Model DSARoundSession
+ * 
+ */
+export type DSARoundSession = Prisma.DSARoundSessionModel
