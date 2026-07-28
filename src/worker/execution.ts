@@ -89,6 +89,83 @@ const worker = new Worker("code-execution", async (job: any) => {
         };
 
     }
+    // ARENA (CONTEST) FINAL SUBMISSION LOGIC
+    else if (job.name === "arena-submission") {
+        console.log(`Evaluating Mock Arena Session: ${job.data.sessionId}`);
+        const { sessionId, userId, submissions } = job.data;
+        let totalScore = 0;
+
+        for (const sub of submissions) {
+            // 1. Fetch the question and ALL test cases (including hidden)
+            const question = await prisma.question.findUnique({
+                where: { id: sub.questionId },
+                include: { testCases: true }
+            });
+
+            if (!question) continue;
+
+            let finalVerdict: Verdict = "AC";
+            
+            // 2. If they left it blank, auto-fail
+            if (!sub.code || sub.code.trim() === "") {
+                finalVerdict = "WA";
+            } else {
+                // 3. Run against all test cases in Docker
+                for (const tc of question.testCases) {
+                     
+                    const result = await runInDocker({ code: sub.code, language: sub.language, stdin: tc.input });
+
+                    if (result.timedOut) { finalVerdict = "TLE"; break; }
+                    if (result.oomKilled) { finalVerdict = "MLE"; break; }
+                    if (result.exitCode !== 0) { 
+                        finalVerdict = result.stderr.toLowerCase().includes("compile") ? "CE" : "RTE"; 
+                        break; 
+                    }
+                    if (result.stdout.trim() !== tc.expectedOutput.trim()) { 
+                        finalVerdict = "WA"; 
+                        break; 
+                    }
+                }
+            }
+
+            if (finalVerdict === "AC") totalScore += 1;
+
+            // 4. Save the submission to DB, linked to the Arena Session
+            const savedSub = await prisma.submission.create({
+                data: {
+                    userId,
+                    questionId: sub.questionId,
+                    dSARoundSessionId: sessionId, // LINK IT TO THE SESSION!
+                    code: sub.code,
+                    language: sub.language,
+                    verdict: finalVerdict,
+                    aiFeedback: "Analysis pending..." 
+                }
+            });
+
+            // 5. Trigger AI Feedback for this specific submission
+            addAIFeedbackJob({
+                submissionId: savedSub.id,
+                questionId: sub.questionId,
+                code: sub.code,
+                language: sub.language,
+                verdict: finalVerdict
+            }).catch(err => console.error("Failed AI job", err));
+        }
+
+        // 6. Complete the Session!
+        await prisma.dSARoundSession.update({
+            where: { id: sessionId },
+            data: {
+                status: "COMPLETED",
+                completedAt: new Date(),
+                score: totalScore
+            }
+        });
+
+        console.log(`Arena ${sessionId} evaluated. Score: ${totalScore}/3`);
+        return { status: "completed", score: totalScore };
+    }
 
 }, { connection: redisConfig });
 
