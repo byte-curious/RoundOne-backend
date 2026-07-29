@@ -2,7 +2,7 @@ import { Router } from "express";
 import { auth } from "../middleware/auth.middleware.js";
 import { getAllQuestions, getQuestionBySlug, getQuestionSubmissions, getUserSubmissions } from "../controllers/practice.js";
 import { submitCode } from "../controllers/practice.js"; 
-import {getAvailableCompanies, getDSARoundQuestions, getDSARoundReview, submitDSARoundSession, getDSARoundSession} from "../controllers/dsaRoundSession.js"
+import {getAvailableCompanies, getDSARoundQuestions, getDSARoundReview, submitDSARoundSession, getDSARoundSession, getDSARoundHistory} from "../controllers/dsaRoundSession.js"
 
 const practiceRouter = Router();
 
@@ -17,4 +17,5 @@ practiceRouter.get("/get-available-companies", auth, getAvailableCompanies);
 practiceRouter.get("/review/:sessionId", auth, getDSARoundReview);
 practiceRouter.get("/dsa-mock-interview/session/:sessionId", auth, getDSARoundSession);
 practiceRouter.post("/dsa-mock-interview/submit", auth, submitDSARoundSession);
+practiceRouter.get("/dsa-mock-interview/history", auth, getDSARoundHistory);
 export { practiceRouter };
