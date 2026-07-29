@@ -4,3 +4,4 @@ node_modules
 dist
 prisma/questions.secret.json
 prisma/deleteAllQuestion.ts
+prisma/seed.ts

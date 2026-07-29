@@ -27,18 +27,25 @@ enum Difficulty {
   HARD
 }
 
+enum DSARoundStatus {
+  IN_PROGRESS
+  TERMINATED
+  COMPLETED
+}
+
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  resumeDownloads Int @default(0)
-  resume     Resume?
-  sessions   Session[]
-  progress   Progress[]
-  submission Submission[]
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  password        String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  resumeDownloads Int               @default(0)
+  resume          Resume?
+  sessions        Session[]
+  progress        Progress[]
+  submission      Submission[]
+  dsaRoundSession DSARoundSession[]
 }
 
 model OTPVerification {
@@ -114,22 +121,23 @@ model Question {
   id          String     @id @default(uuid())
   slug        String     @unique
   title       String
-  description String @db.Text
+  description String     @db.Text
   difficulty  Difficulty
   topics      String[]
   companies   String[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  testCases  TestCase[]
-  pods       POD[]
-  submission Submission[]
+  testCases       TestCase[]
+  pods            POD[]
+  submission      Submission[]
+  dsaroundSession DSARoundSession[]
 }
 
 model TestCase {
   id             String  @id @default(uuid())
-  input          String  @db.Text 
-  expectedOutput String @db.Text
+  input          String  @db.Text
+  expectedOutput String  @db.Text
   isHidden       Boolean // kuchh test case hi visible honge rest all are hidden
   questionId     String
 
@@ -152,8 +160,10 @@ model Submission {
   aiFeedback      String? @db.Text
 
   // relationship
-  user     User     @relation(references: [id], fields: [userId], onDelete: Cascade)
-  question Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
+  user              User             @relation(references: [id], fields: [userId], onDelete: Cascade)
+  question          Question         @relation(references: [id], fields: [questionId], onDelete: Cascade)
+  dsaroundSession   DSARoundSession? @relation(fields: [dSARoundSessionId], references: [id])
+  dSARoundSessionId String?
 }
 
 model POD {
@@ -162,4 +172,18 @@ model POD {
   questionId String
 
   question Question @relation(references: [id], fields: [questionId], onDelete: Cascade)
+}
+
+model DSARoundSession {
+  id          String         @id @default(uuid())
+  userId      String
+  company     String
+  status      DSARoundStatus @default(IN_PROGRESS)
+  startedAt   DateTime       @default(now())
+  completedAt DateTime?
+  score       Int            @default(0)
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions   Question[]  
+  submissions Submission[]
 }

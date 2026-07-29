@@ -394,7 +394,8 @@ export const ModelName = {
   Question: 'Question',
   TestCase: 'TestCase',
   Submission: 'Submission',
-  POD: 'POD'
+  POD: 'POD',
+  DSARoundSession: 'DSARoundSession'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oTPVerification" | "passwordResetOTP" | "resume" | "session" | "evaluation" | "progress" | "question" | "testCase" | "submission" | "pOD"
+    modelProps: "user" | "oTPVerification" | "passwordResetOTP" | "resume" | "session" | "evaluation" | "progress" | "question" | "testCase" | "submission" | "pOD" | "dSARoundSession"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1228,6 +1229,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DSARoundSession: {
+      payload: Prisma.$DSARoundSessionPayload<ExtArgs>
+      fields: Prisma.DSARoundSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DSARoundSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DSARoundSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.DSARoundSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DSARoundSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        findMany: {
+          args: Prisma.DSARoundSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>[]
+        }
+        create: {
+          args: Prisma.DSARoundSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        createMany: {
+          args: Prisma.DSARoundSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DSARoundSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.DSARoundSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        update: {
+          args: Prisma.DSARoundSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.DSARoundSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DSARoundSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DSARoundSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.DSARoundSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DSARoundSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.DSARoundSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDSARoundSession>
+        }
+        groupBy: {
+          args: Prisma.DSARoundSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DSARoundSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DSARoundSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DSARoundSessionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1395,7 +1470,8 @@ export const SubmissionScalarFieldEnum = {
   createdAt: 'createdAt',
   timeComplexity: 'timeComplexity',
   spaceComplexity: 'spaceComplexity',
-  aiFeedback: 'aiFeedback'
+  aiFeedback: 'aiFeedback',
+  dSARoundSessionId: 'dSARoundSessionId'
 } as const
 
 export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
@@ -1408,6 +1484,19 @@ export const PODScalarFieldEnum = {
 } as const
 
 export type PODScalarFieldEnum = (typeof PODScalarFieldEnum)[keyof typeof PODScalarFieldEnum]
+
+
+export const DSARoundSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  company: 'company',
+  status: 'status',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  score: 'score'
+} as const
+
+export type DSARoundSessionScalarFieldEnum = (typeof DSARoundSessionScalarFieldEnum)[keyof typeof DSARoundSessionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1514,6 +1603,20 @@ export type EnumVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
  * Reference to a field of type 'Verdict[]'
  */
 export type ListEnumVerdictFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Verdict[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DSARoundStatus'
+ */
+export type EnumDSARoundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DSARoundStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DSARoundStatus[]'
+ */
+export type ListEnumDSARoundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DSARoundStatus[]'>
     
 
 
@@ -1651,6 +1754,7 @@ export type GlobalOmitConfig = {
   testCase?: Prisma.TestCaseOmit
   submission?: Prisma.SubmissionOmit
   pOD?: Prisma.PODOmit
+  dSARoundSession?: Prisma.DSARoundSessionOmit
 }
 
 /* Types for Logging */

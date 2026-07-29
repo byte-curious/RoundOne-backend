@@ -31,3 +31,11 @@ export const addAIFeedbackJob = async (data: {
 }) => {
     await aiFeedbackQueue.add("generate-feedback", data);
 }
+export const addArenaSubmissionJob = async (data: {
+    sessionId: string;
+    userId: string;
+    submissions: { questionId: string; code: string; language: string }[];
+}) => {
+    const job = await executionQueue.add("arena-submission", data);
+    return job.id;
+};

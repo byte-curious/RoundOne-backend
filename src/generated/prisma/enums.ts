@@ -28,3 +28,12 @@ export const Difficulty = {
 } as const
 
 export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]
+
+
+export const DSARoundStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  TERMINATED: 'TERMINATED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type DSARoundStatus = (typeof DSARoundStatus)[keyof typeof DSARoundStatus]

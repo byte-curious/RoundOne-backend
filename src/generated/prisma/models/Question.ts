@@ -209,6 +209,7 @@ export type QuestionWhereInput = {
   testCases?: Prisma.TestCaseListRelationFilter
   pods?: Prisma.PODListRelationFilter
   submission?: Prisma.SubmissionListRelationFilter
+  dsaroundSession?: Prisma.DSARoundSessionListRelationFilter
 }
 
 export type QuestionOrderByWithRelationInput = {
@@ -224,6 +225,7 @@ export type QuestionOrderByWithRelationInput = {
   testCases?: Prisma.TestCaseOrderByRelationAggregateInput
   pods?: Prisma.PODOrderByRelationAggregateInput
   submission?: Prisma.SubmissionOrderByRelationAggregateInput
+  dsaroundSession?: Prisma.DSARoundSessionOrderByRelationAggregateInput
 }
 
 export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -242,6 +244,7 @@ export type QuestionWhereUniqueInput = Prisma.AtLeast<{
   testCases?: Prisma.TestCaseListRelationFilter
   pods?: Prisma.PODListRelationFilter
   submission?: Prisma.SubmissionListRelationFilter
+  dsaroundSession?: Prisma.DSARoundSessionListRelationFilter
 }, "id" | "slug">
 
 export type QuestionOrderByWithAggregationInput = {
@@ -287,6 +290,7 @@ export type QuestionCreateInput = {
   testCases?: Prisma.TestCaseCreateNestedManyWithoutQuestionInput
   pods?: Prisma.PODCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateInput = {
@@ -302,6 +306,7 @@ export type QuestionUncheckedCreateInput = {
   testCases?: Prisma.TestCaseUncheckedCreateNestedManyWithoutQuestionInput
   pods?: Prisma.PODUncheckedCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionUpdateInput = {
@@ -317,6 +322,7 @@ export type QuestionUpdateInput = {
   testCases?: Prisma.TestCaseUpdateManyWithoutQuestionNestedInput
   pods?: Prisma.PODUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateInput = {
@@ -332,6 +338,7 @@ export type QuestionUncheckedUpdateInput = {
   testCases?: Prisma.TestCaseUncheckedUpdateManyWithoutQuestionNestedInput
   pods?: Prisma.PODUncheckedUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionCreateManyInput = {
@@ -407,6 +414,16 @@ export type QuestionScalarRelationFilter = {
   isNot?: Prisma.QuestionWhereInput
 }
 
+export type QuestionListRelationFilter = {
+  every?: Prisma.QuestionWhereInput
+  some?: Prisma.QuestionWhereInput
+  none?: Prisma.QuestionWhereInput
+}
+
+export type QuestionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type QuestionCreatetopicsInput = {
   set: string[]
 }
@@ -471,6 +488,44 @@ export type QuestionUpdateOneRequiredWithoutPodsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.QuestionUpdateToOneWithWhereWithoutPodsInput, Prisma.QuestionUpdateWithoutPodsInput>, Prisma.QuestionUncheckedUpdateWithoutPodsInput>
 }
 
+export type QuestionCreateNestedManyWithoutDsaroundSessionInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.QuestionCreateWithoutDsaroundSessionInput[] | Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput | Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+}
+
+export type QuestionUncheckedCreateNestedManyWithoutDsaroundSessionInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.QuestionCreateWithoutDsaroundSessionInput[] | Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput | Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+}
+
+export type QuestionUpdateManyWithoutDsaroundSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.QuestionCreateWithoutDsaroundSessionInput[] | Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput | Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput[]
+  upsert?: Prisma.QuestionUpsertWithWhereUniqueWithoutDsaroundSessionInput | Prisma.QuestionUpsertWithWhereUniqueWithoutDsaroundSessionInput[]
+  set?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  disconnect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  delete?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  update?: Prisma.QuestionUpdateWithWhereUniqueWithoutDsaroundSessionInput | Prisma.QuestionUpdateWithWhereUniqueWithoutDsaroundSessionInput[]
+  updateMany?: Prisma.QuestionUpdateManyWithWhereWithoutDsaroundSessionInput | Prisma.QuestionUpdateManyWithWhereWithoutDsaroundSessionInput[]
+  deleteMany?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+}
+
+export type QuestionUncheckedUpdateManyWithoutDsaroundSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput> | Prisma.QuestionCreateWithoutDsaroundSessionInput[] | Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput[]
+  connectOrCreate?: Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput | Prisma.QuestionCreateOrConnectWithoutDsaroundSessionInput[]
+  upsert?: Prisma.QuestionUpsertWithWhereUniqueWithoutDsaroundSessionInput | Prisma.QuestionUpsertWithWhereUniqueWithoutDsaroundSessionInput[]
+  set?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  disconnect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  delete?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  connect?: Prisma.QuestionWhereUniqueInput | Prisma.QuestionWhereUniqueInput[]
+  update?: Prisma.QuestionUpdateWithWhereUniqueWithoutDsaroundSessionInput | Prisma.QuestionUpdateWithWhereUniqueWithoutDsaroundSessionInput[]
+  updateMany?: Prisma.QuestionUpdateManyWithWhereWithoutDsaroundSessionInput | Prisma.QuestionUpdateManyWithWhereWithoutDsaroundSessionInput[]
+  deleteMany?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+}
+
 export type QuestionCreateWithoutTestCasesInput = {
   id?: string
   slug: string
@@ -483,6 +538,7 @@ export type QuestionCreateWithoutTestCasesInput = {
   updatedAt?: Date | string
   pods?: Prisma.PODCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateWithoutTestCasesInput = {
@@ -497,6 +553,7 @@ export type QuestionUncheckedCreateWithoutTestCasesInput = {
   updatedAt?: Date | string
   pods?: Prisma.PODUncheckedCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionCreateOrConnectWithoutTestCasesInput = {
@@ -527,6 +584,7 @@ export type QuestionUpdateWithoutTestCasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pods?: Prisma.PODUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateWithoutTestCasesInput = {
@@ -541,6 +599,7 @@ export type QuestionUncheckedUpdateWithoutTestCasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pods?: Prisma.PODUncheckedUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionCreateWithoutSubmissionInput = {
@@ -555,6 +614,7 @@ export type QuestionCreateWithoutSubmissionInput = {
   updatedAt?: Date | string
   testCases?: Prisma.TestCaseCreateNestedManyWithoutQuestionInput
   pods?: Prisma.PODCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateWithoutSubmissionInput = {
@@ -569,6 +629,7 @@ export type QuestionUncheckedCreateWithoutSubmissionInput = {
   updatedAt?: Date | string
   testCases?: Prisma.TestCaseUncheckedCreateNestedManyWithoutQuestionInput
   pods?: Prisma.PODUncheckedCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionCreateOrConnectWithoutSubmissionInput = {
@@ -599,6 +660,7 @@ export type QuestionUpdateWithoutSubmissionInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testCases?: Prisma.TestCaseUpdateManyWithoutQuestionNestedInput
   pods?: Prisma.PODUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateWithoutSubmissionInput = {
@@ -613,6 +675,7 @@ export type QuestionUncheckedUpdateWithoutSubmissionInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testCases?: Prisma.TestCaseUncheckedUpdateManyWithoutQuestionNestedInput
   pods?: Prisma.PODUncheckedUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionCreateWithoutPodsInput = {
@@ -627,6 +690,7 @@ export type QuestionCreateWithoutPodsInput = {
   updatedAt?: Date | string
   testCases?: Prisma.TestCaseCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionUncheckedCreateWithoutPodsInput = {
@@ -641,6 +705,7 @@ export type QuestionUncheckedCreateWithoutPodsInput = {
   updatedAt?: Date | string
   testCases?: Prisma.TestCaseUncheckedCreateNestedManyWithoutQuestionInput
   submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutQuestionInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedCreateNestedManyWithoutQuestionsInput
 }
 
 export type QuestionCreateOrConnectWithoutPodsInput = {
@@ -671,6 +736,7 @@ export type QuestionUpdateWithoutPodsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testCases?: Prisma.TestCaseUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUpdateManyWithoutQuestionsNestedInput
 }
 
 export type QuestionUncheckedUpdateWithoutPodsInput = {
@@ -685,6 +751,115 @@ export type QuestionUncheckedUpdateWithoutPodsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   testCases?: Prisma.TestCaseUncheckedUpdateManyWithoutQuestionNestedInput
   submission?: Prisma.SubmissionUncheckedUpdateManyWithoutQuestionNestedInput
+  dsaroundSession?: Prisma.DSARoundSessionUncheckedUpdateManyWithoutQuestionsNestedInput
+}
+
+export type QuestionCreateWithoutDsaroundSessionInput = {
+  id?: string
+  slug: string
+  title: string
+  description: string
+  difficulty: $Enums.Difficulty
+  topics?: Prisma.QuestionCreatetopicsInput | string[]
+  companies?: Prisma.QuestionCreatecompaniesInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  testCases?: Prisma.TestCaseCreateNestedManyWithoutQuestionInput
+  pods?: Prisma.PODCreateNestedManyWithoutQuestionInput
+  submission?: Prisma.SubmissionCreateNestedManyWithoutQuestionInput
+}
+
+export type QuestionUncheckedCreateWithoutDsaroundSessionInput = {
+  id?: string
+  slug: string
+  title: string
+  description: string
+  difficulty: $Enums.Difficulty
+  topics?: Prisma.QuestionCreatetopicsInput | string[]
+  companies?: Prisma.QuestionCreatecompaniesInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  testCases?: Prisma.TestCaseUncheckedCreateNestedManyWithoutQuestionInput
+  pods?: Prisma.PODUncheckedCreateNestedManyWithoutQuestionInput
+  submission?: Prisma.SubmissionUncheckedCreateNestedManyWithoutQuestionInput
+}
+
+export type QuestionCreateOrConnectWithoutDsaroundSessionInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput>
+}
+
+export type QuestionUpsertWithWhereUniqueWithoutDsaroundSessionInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  update: Prisma.XOR<Prisma.QuestionUpdateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedUpdateWithoutDsaroundSessionInput>
+  create: Prisma.XOR<Prisma.QuestionCreateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedCreateWithoutDsaroundSessionInput>
+}
+
+export type QuestionUpdateWithWhereUniqueWithoutDsaroundSessionInput = {
+  where: Prisma.QuestionWhereUniqueInput
+  data: Prisma.XOR<Prisma.QuestionUpdateWithoutDsaroundSessionInput, Prisma.QuestionUncheckedUpdateWithoutDsaroundSessionInput>
+}
+
+export type QuestionUpdateManyWithWhereWithoutDsaroundSessionInput = {
+  where: Prisma.QuestionScalarWhereInput
+  data: Prisma.XOR<Prisma.QuestionUpdateManyMutationInput, Prisma.QuestionUncheckedUpdateManyWithoutDsaroundSessionInput>
+}
+
+export type QuestionScalarWhereInput = {
+  AND?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+  OR?: Prisma.QuestionScalarWhereInput[]
+  NOT?: Prisma.QuestionScalarWhereInput | Prisma.QuestionScalarWhereInput[]
+  id?: Prisma.StringFilter<"Question"> | string
+  slug?: Prisma.StringFilter<"Question"> | string
+  title?: Prisma.StringFilter<"Question"> | string
+  description?: Prisma.StringFilter<"Question"> | string
+  difficulty?: Prisma.EnumDifficultyFilter<"Question"> | $Enums.Difficulty
+  topics?: Prisma.StringNullableListFilter<"Question">
+  companies?: Prisma.StringNullableListFilter<"Question">
+  createdAt?: Prisma.DateTimeFilter<"Question"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Question"> | Date | string
+}
+
+export type QuestionUpdateWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  topics?: Prisma.QuestionUpdatetopicsInput | string[]
+  companies?: Prisma.QuestionUpdatecompaniesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  testCases?: Prisma.TestCaseUpdateManyWithoutQuestionNestedInput
+  pods?: Prisma.PODUpdateManyWithoutQuestionNestedInput
+  submission?: Prisma.SubmissionUpdateManyWithoutQuestionNestedInput
+}
+
+export type QuestionUncheckedUpdateWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  topics?: Prisma.QuestionUpdatetopicsInput | string[]
+  companies?: Prisma.QuestionUpdatecompaniesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  testCases?: Prisma.TestCaseUncheckedUpdateManyWithoutQuestionNestedInput
+  pods?: Prisma.PODUncheckedUpdateManyWithoutQuestionNestedInput
+  submission?: Prisma.SubmissionUncheckedUpdateManyWithoutQuestionNestedInput
+}
+
+export type QuestionUncheckedUpdateManyWithoutDsaroundSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  topics?: Prisma.QuestionUpdatetopicsInput | string[]
+  companies?: Prisma.QuestionUpdatecompaniesInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -696,12 +871,14 @@ export type QuestionCountOutputType = {
   testCases: number
   pods: number
   submission: number
+  dsaroundSession: number
 }
 
 export type QuestionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   testCases?: boolean | QuestionCountOutputTypeCountTestCasesArgs
   pods?: boolean | QuestionCountOutputTypeCountPodsArgs
   submission?: boolean | QuestionCountOutputTypeCountSubmissionArgs
+  dsaroundSession?: boolean | QuestionCountOutputTypeCountDsaroundSessionArgs
 }
 
 /**
@@ -735,6 +912,13 @@ export type QuestionCountOutputTypeCountSubmissionArgs<ExtArgs extends runtime.T
   where?: Prisma.SubmissionWhereInput
 }
 
+/**
+ * QuestionCountOutputType without action
+ */
+export type QuestionCountOutputTypeCountDsaroundSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DSARoundSessionWhereInput
+}
+
 
 export type QuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -749,6 +933,7 @@ export type QuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   testCases?: boolean | Prisma.Question$testCasesArgs<ExtArgs>
   pods?: boolean | Prisma.Question$podsArgs<ExtArgs>
   submission?: boolean | Prisma.Question$submissionArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Question$dsaroundSessionArgs<ExtArgs>
   _count?: boolean | Prisma.QuestionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["question"]>
 
@@ -793,6 +978,7 @@ export type QuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   testCases?: boolean | Prisma.Question$testCasesArgs<ExtArgs>
   pods?: boolean | Prisma.Question$podsArgs<ExtArgs>
   submission?: boolean | Prisma.Question$submissionArgs<ExtArgs>
+  dsaroundSession?: boolean | Prisma.Question$dsaroundSessionArgs<ExtArgs>
   _count?: boolean | Prisma.QuestionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type QuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -804,6 +990,7 @@ export type $QuestionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     testCases: Prisma.$TestCasePayload<ExtArgs>[]
     pods: Prisma.$PODPayload<ExtArgs>[]
     submission: Prisma.$SubmissionPayload<ExtArgs>[]
+    dsaroundSession: Prisma.$DSARoundSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1212,6 +1399,7 @@ export interface Prisma__QuestionClient<T, Null = never, ExtArgs extends runtime
   testCases<T extends Prisma.Question$testCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Question$testCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pods<T extends Prisma.Question$podsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Question$podsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PODPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   submission<T extends Prisma.Question$submissionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Question$submissionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dsaroundSession<T extends Prisma.Question$dsaroundSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Question$dsaroundSessionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DSARoundSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1712,6 +1900,30 @@ export type Question$submissionArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.SubmissionScalarFieldEnum | Prisma.SubmissionScalarFieldEnum[]
+}
+
+/**
+ * Question.dsaroundSession
+ */
+export type Question$dsaroundSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DSARoundSession
+   */
+  select?: Prisma.DSARoundSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DSARoundSession
+   */
+  omit?: Prisma.DSARoundSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DSARoundSessionInclude<ExtArgs> | null
+  where?: Prisma.DSARoundSessionWhereInput
+  orderBy?: Prisma.DSARoundSessionOrderByWithRelationInput | Prisma.DSARoundSessionOrderByWithRelationInput[]
+  cursor?: Prisma.DSARoundSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DSARoundSessionScalarFieldEnum | Prisma.DSARoundSessionScalarFieldEnum[]
 }
 
 /**

@@ -2,7 +2,7 @@
   {
     "slug": "two-sum",
     "title": "Two Sum",
-    "description": "Given an array...",
+    "description": "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.\n\nConstraints:\n\n* `2 <= nums.length <= 10^4`\n* `-10^9 <= nums[i] <= 10^9`\n* `-10^9 <= target <= 10^9`\n* Only one valid answer exists.",
     "difficulty": "EASY",
     "topics": ["Array", "Hash Table"],
     "companies": ["Amazon", "Google"],
