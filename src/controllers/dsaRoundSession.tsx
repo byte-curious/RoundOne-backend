@@ -194,4 +194,20 @@ const getDSARoundReview = async(req: Request, res: Response)=>{
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
-export {getDSARoundReview, submitDSARoundSession, getDSARoundSession, getDSARoundQuestions, getAvailableCompanies }
+const getDSARoundHistory = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+        const history = await prisma.dSARoundSession.findMany({
+            where: { userId: userId },
+            orderBy: { startedAt: 'desc' }
+        });
+
+        return res.status(200).json({ history });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export {getDSARoundHistory, getDSARoundReview, submitDSARoundSession, getDSARoundSession, getDSARoundQuestions, getAvailableCompanies }
