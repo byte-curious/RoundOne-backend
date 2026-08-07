@@ -9,7 +9,9 @@ import { codeRouter } from "./routes/code.js"
 import "./worker/execution.js"
 import "./worker/ai.js";
 import { progressRouter } from "./routes/progress.js"
-import { practiceRouter } from "./routes/practice.js"
+import { practiceRouter } from "./routes/practice.js";
+import {analyticsRouter} from "./routes/analytics.js";
+
 const app = express()
 const PORT = process.env.PORT || 3000
 const allowedOrigins = [
@@ -45,5 +47,7 @@ app.use("/resume", resumeRouter)
 app.use("/interview", interviewRouter)
 app.use("/code", codeRouter)
 app.use("/progress", progressRouter);
-app.use("/practice", practiceRouter)
+app.use("/practice", practiceRouter);
+app.use("/analytics", analyticsRouter);
+
 app.listen(PORT, () => console.log("server is running", PORT))
