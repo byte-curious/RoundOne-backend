@@ -1,10 +1,12 @@
 import { analyticsDataClient } from "../utils/analytics.js";
 import { prisma } from "../utils/database/db.js";
 import type { Request, Response } from "express";
-
+import axios from "axios"
 const GA4_PROPERTY_ID = process.env.GOOGLE_PROPERTY_ID;
 
 let cachedStats = { users: 0, visits: 0, lastFetched: 0 };
+const GA4_MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID;
+const GA4_API_SECRET = process.env.GA4_API_SECRET;
 
 export const getAnalytics = async (req: Request, res: Response) => {
     const tenMinutes = 10 * 60 * 1000;
@@ -52,5 +54,32 @@ export const getAnalytics = async (req: Request, res: Response) => {
         return res.status(500).json({
             error: "Internal Server Error"
         });
+    }
+};
+
+export const trackVisit = async (req: Request, res: Response) => {
+    try {
+        const { page, clientId } = req.body;
+
+        // Send data directly to Google from the Server
+        await axios.post(
+            `https://www.google-analytics.com/mp/collect?measurement_id=${GA4_MEASUREMENT_ID}&api_secret=${GA4_API_SECRET}`,
+            {
+                client_id: clientId, // Required by GA4 to differentiate users
+                events: [{
+                    name: 'page_view',
+                    params: {
+                        page_location: page,
+                        session_id: clientId, // Groups hits into a session
+                    },
+                }],
+            }
+        );
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Failed to track server-side:", error);
+        // We still return 200 so the frontend doesn't crash if tracking fails
+        res.status(200).json({ success: false }); 
     }
 };
