@@ -31,10 +31,12 @@ export const getAnalytics = async (req: Request, res: Response) => {
 
         const totalVisits = response.rows?.[0]?.metricValues?.[0]?.value ?? "0";
 
+        const PREVIOUS_UNTRACKED_VISITS = 37;
+
         // 4. Update the Cache
         cachedStats = {
             users: usersCnt,
-            visits: parseInt(totalVisits, 10), // Added base 10 for safety
+            visits: parseInt(totalVisits, 10)  + PREVIOUS_UNTRACKED_VISITS, // Added base 10 for safety
             lastFetched: now,
         };
 
