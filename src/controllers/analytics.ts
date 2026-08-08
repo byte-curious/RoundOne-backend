@@ -1,12 +1,13 @@
 import { analyticsDataClient } from "../utils/analytics.js";
 import { prisma } from "../utils/database/db.js";
 import type { Request, Response } from "express";
-import axios from "axios"
-const GA4_PROPERTY_ID = process.env.GOOGLE_PROPERTY_ID;
+import axios from "axios";
 
-let cachedStats = { users: 0, visits: 0, lastFetched: 0 };
+const GA4_PROPERTY_ID = process.env.GOOGLE_PROPERTY_ID;
 const GA4_MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID;
 const GA4_API_SECRET = process.env.GA4_API_SECRET;
+
+let cachedStats = { users: 0, visits: 0, lastFetched: 0 };
 
 export const getAnalytics = async (req: Request, res: Response) => {
     const tenMinutes = 10 * 60 * 1000;
@@ -32,13 +33,12 @@ export const getAnalytics = async (req: Request, res: Response) => {
         });
 
         const totalVisits = response.rows?.[0]?.metricValues?.[0]?.value ?? "0";
-
         const PREVIOUS_UNTRACKED_VISITS = 37;
 
         // 4. Update the Cache
         cachedStats = {
             users: usersCnt,
-            visits: parseInt(totalVisits, 10)  + PREVIOUS_UNTRACKED_VISITS, // Added base 10 for safety
+            visits: parseInt(totalVisits, 10) + PREVIOUS_UNTRACKED_VISITS, 
             lastFetched: now,
         };
 
@@ -50,7 +50,6 @@ export const getAnalytics = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error("Failed to fetch analytics data:", error); 
-        
         return res.status(500).json({
             error: "Internal Server Error"
         });
@@ -59,7 +58,14 @@ export const getAnalytics = async (req: Request, res: Response) => {
 
 export const trackVisit = async (req: Request, res: Response) => {
     try {
-        const { page, clientId } = req.body;
+        // FIX: Safely extract data using `?.` so it doesn't crash if body is empty
+        const page = req.body?.page;
+        const clientId = req.body?.clientId;
+
+        // FIX: If page or clientId is missing, just ignore the request safely
+        if (!page || !clientId) {
+            return res.status(400).json({ success: false, message: "No body provided" });
+        }
 
         // Send data directly to Google from the Server
         await axios.post(
@@ -76,10 +82,10 @@ export const trackVisit = async (req: Request, res: Response) => {
             }
         );
 
-        res.status(200).json({ success: true });
+        // Need to return res... instead of just res... to avoid TypeScript/Express hanging
+        return res.status(200).json({ success: true });
     } catch (error) {
         console.error("Failed to track server-side:", error);
-        // We still return 200 so the frontend doesn't crash if tracking fails
-        res.status(200).json({ success: false }); 
+        return res.status(200).json({ success: false }); 
     }
 };

@@ -5,6 +5,6 @@ const analyticsRouter = Router();
 
 
 analyticsRouter.get("/stats", getAnalytics)
-analyticsRouter.get("/track", trackVisit);
+analyticsRouter.post("/track", trackVisit);
 
 export   {analyticsRouter};
