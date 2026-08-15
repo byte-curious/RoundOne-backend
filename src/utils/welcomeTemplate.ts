@@ -16,7 +16,7 @@ const BRAND_COLOR_DARK = "#3730A3"
 
 export function generateWelcomeEmailTemplate({
   recipientName,
-  supportEmail = "support@roundone.com",
+  supportEmail = "roundone.connect@gmail.com",
 }: WelcomeEmailOptions): WelcomeEmailTemplate {
   const subject = `Welcome to ${PLATFORM_NAME}, ${recipientName}! 🎯`
 
