@@ -316,11 +316,11 @@ const login = async (req: Request, res: Response) => {
         // set cookie to http-only 
         res.cookie("token", generateJWT, {
             httpOnly: true,
-            secure: isProd,
-            sameSite: isProd ? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: jwtExpiry * 1000,
             path: "/",
-            domain: ".roundoneprep.me"
+            domain: process.env.NODE_ENV === "production" ? ".roundoneprep.me" : undefined
         });
         return res.status(200).json({
             "message": "Login Successfully", user: {

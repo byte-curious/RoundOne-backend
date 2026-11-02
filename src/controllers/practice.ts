@@ -1,51 +1,40 @@
-// get : practise/questions -> return a list of all question
-// use pagination && filter -> pagenation ke liye limit ; 20, filter: 'company', 'difficulty', 'company', 'topic', 
-// get : practise/:slug => return that particular question
 import type { Request, Response } from "express";
-import { prisma } from "../utils/database/db.js";
-import { addPracticeSubmissionJob } from "../queue/execute.js";
+import { executeNative } from "../services/nativeRunner.js";
+import { callGemini } from "../services/gemini.service.js";
+import { 
+  submissionCodeFeedbackPromptForAC, 
+  submissionCodeFeedbackPromptForNotAC 
+} from "../utils/prompts/SubmissionCodeFeedback.js";
 import { SubmitCodeSchema } from "../zod/index.js";
+import { prisma } from "../utils/database/db.js";
 
-
-const getAllQuestions = async (req: Request, res: Response) => {
+export const getAllQuestions = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
-
         const page = Number(req.query?.page) || 1;
         const limit = Number(req.query?.limit) || 20;
         const company = req.query.company as string || undefined;
         const difficulty = req.query.difficulty as string || undefined;
         const topic = req.query.topic as string || undefined;
         const search = req.query.search as string || undefined;
-        
-        //  Extract the new status filter
         const status = req.query.status as string || undefined;
 
         const whereClause: any = {};
         
-        if (difficulty) {
-            whereClause.difficulty = difficulty.toUpperCase();
-        }
-        if (company) {
-            whereClause.companies = { has: company };
-        }
-        if (topic) {
-            whereClause.topics = { has: topic };
-        }
-        if (search) {
-            whereClause.title = { contains: search, mode: "insensitive" };
-        }
+        if (difficulty) whereClause.difficulty = difficulty.toUpperCase();
+        if (company) whereClause.companies = { has: company };
+        if (topic) whereClause.topics = { has: topic };
+        if (search) whereClause.title = { contains: search, mode: "insensitive" };
 
-        //  Apply the Status Logic (Only if the user is logged in!)
         if (status && userId) {
             if (status === "SOLVED") {
-                whereClause.submission = { some: { userId: userId, verdict: "AC" } };
+                whereClause.submission = { some: { userId, verdict: "AC" } };
             } else if (status === "UNSOLVED") {
-                whereClause.submission = { none: { userId: userId } };
+                whereClause.submission = { none: { userId } };
             } else if (status === "ATTEMPTED") {
                 whereClause.submission = { 
-                    some: { userId: userId },
-                    none: { userId: userId, verdict: "AC" } 
+                    some: { userId },
+                    none: { userId, verdict: "AC" } 
                 };
             }
         }
@@ -57,9 +46,7 @@ const getAllQuestions = async (req: Request, res: Response) => {
                 where: whereClause,
                 take: limit,
                 skip,
-                orderBy: {
-                    createdAt: "desc"
-                },
+                orderBy: { createdAt: "desc" },
                 select: {
                     id: true,
                     slug: true,
@@ -68,21 +55,18 @@ const getAllQuestions = async (req: Request, res: Response) => {
                     topics: true,
                     companies: true,
                     createdAt: true,
-                    //  Fetch user's submissions so the frontend can render the green checkmarks!
                     ...(userId && {
                         submission: {
-                            where: { userId: userId },
+                            where: { userId },
                             select: { verdict: true }
                         }
                     })
                 }
             }),
-            prisma.question.count({
-                where: whereClause
-            })
+            prisma.question.count({ where: whereClause })
         ]);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: questions,
             pagination: {
@@ -92,53 +76,37 @@ const getAllQuestions = async (req: Request, res: Response) => {
                 totalPages: Math.ceil(total / limit)
             }
         });
-
     } catch (error) {
         console.error(error);
-        return res.status(500).json({error: "Internal Server Error"});
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
-const getQuestionBySlug = async (req: Request, res: Response) => {
+};
+
+export const getQuestionBySlug = async (req: Request, res: Response) => {
     try {
         const { slug } = req.params;
-        if (!slug) {
-            return res.status(400).json({ error: "Slug is not present" });
-        }
+        if (!slug) return res.status(400).json({ error: "Slug is required" });
 
         const question = await prisma.question.findUnique({
-            where: {
-                slug: slug.toString()
-            },
+            where: { slug: slug.toString() },
             include: {
-                testCases: {
-                    where: {
-                        isHidden: false
-                    }
-                },
-                
+                testCases: { where: { isHidden: false } }
             }
         });
 
-        if (!question) {
-            return res.status(404).json({ error: "Question NOT Found" });
-        }
+        if (!question) return res.status(404).json({ error: "Question Not Found" });
 
-        return res.status(200).json({
-            success: true,
-            data : question
-        })
-
+        return res.status(200).json({ success: true, data: question });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({error: "Internal Server Error"})
+        return res.status(500).json({ error: "Internal Server Error" });
     }
-}
-const submitCode = async (req: Request, res: Response) => {
+};
+
+export const submitCode = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;  
-        if (!userId) {
-            return res.status(401).json({ error: "Unauthorized. Please log in." });
-        }
+        if (!userId) return res.status(401).json({ error: "Unauthorized. Please log in." });
 
         const response = SubmitCodeSchema.safeParse(req.body);
         if (!response.success) {
@@ -147,40 +115,80 @@ const submitCode = async (req: Request, res: Response) => {
 
         const { code, language, questionId, userApproach } = response.data;
 
-        //  Fetch ALL test cases (visible + hidden) for this question
         const question = await prisma.question.findUnique({
-            where: {
-                id: questionId
-            },
-            select: {
-                testCases: true  
-            }
+            where: { id: questionId },
+            include: { testCases: true }
         });
 
         if (!question || question.testCases.length === 0) {
             return res.status(404).json({ error: "Question not found or has no test cases" });
         }
 
-        const jobData = {
-            userId,
-            questionId,
-            userApproach,
-            code,
-            language: language as any, 
-            testCases: question.testCases.map(tc => ({
-                input: tc.input,
-                expectedOutput: tc.expectedOutput
-            }))
-        };
+        let finalVerdict: "AC" | "WA" | "TLE" | "RTE" | "CE" = "AC";
+        let failedAtTestCase = 0;
 
-        //  Add to BullMQ Execution Queue
-        const jobId = await addPracticeSubmissionJob(jobData);
+        for (let i = 0; i < question.testCases.length; i++) {
+            const tc = question.testCases[i] as any;
+            const result = await executeNative(language, code, tc.input);
 
-        //  Instantly return the Job ID to the frontend!
+            if (result.timedOut) {
+                finalVerdict = "TLE";
+                failedAtTestCase = i + 1;
+                break;
+            }
+            if (result.exitCode !== 0) {
+                finalVerdict = result.stderr.toLowerCase().includes("compilation") ? "CE" : "RTE";
+                failedAtTestCase = i + 1;
+                break;
+            }
+            if (result.stdout.trim() !== tc.expectedOutput.trim()) {
+                finalVerdict = "WA";
+                failedAtTestCase = i + 1;
+                break;
+            }
+        }
+
+        const savedSubmission = await prisma.submission.create({
+            data: {
+                userId,
+                questionId,
+                code,
+                language,
+                userApproach: userApproach ?? null,
+                verdict: finalVerdict
+            }
+        });
+
+        // Background AI feedback
+        (async () => {
+            try {
+                const prompt = finalVerdict === "AC"
+                    ? submissionCodeFeedbackPromptForAC({ question, code, language, userApproach: userApproach || "" })
+                    : submissionCodeFeedbackPromptForNotAC({ question, language, verdict: finalVerdict, code, userApproach: userApproach || "" });
+                
+                const aiRaw = await callGemini(prompt);
+                if (aiRaw) {
+                    const parsed = JSON.parse(aiRaw.replace(/```json|```/g, "").trim());
+                    await prisma.submission.update({
+                        where: { id: savedSubmission.id },
+                        data: {
+                            timeComplexity: parsed.timeComplexity,
+                            spaceComplexity: parsed.spaceComplexity,
+                            aiFeedback: parsed.aiFeedback
+                        }
+                    });
+                }
+            } catch (aiErr) {
+                console.error("Async AI feedback error:", aiErr);
+            }
+        })();
+
         return res.status(200).json({
             success: true,
-            jobId: jobId,
-            message: "Code submitted for execution"
+            submissionId: savedSubmission.id,
+            verdict: finalVerdict,
+            passed: finalVerdict === "AC",
+            failedAt: finalVerdict === "AC" ? null : failedAtTestCase
         });
 
     } catch (error) {
@@ -188,12 +196,12 @@ const submitCode = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
-const getUserSubmissions = async (req: Request, res: Response) => {
+
+export const getUserSubmissions = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
         if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-        // Fetch all submissions for the heatmap
         const submissions = await prisma.submission.findMany({
             where: { userId },
             select: {
@@ -211,13 +219,14 @@ const getUserSubmissions = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
-const getQuestionSubmissions = async (req: Request, res: Response) => {
+
+export const getQuestionSubmissions = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
         const { questionId } = req.params;
         
         if (!userId) return res.status(401).json({ error: "Unauthorized" });
-        if(!questionId)return res.status(400).json({error: "QuestionId Not Present"});
+        if (!questionId) return res.status(400).json({ error: "QuestionId is required" });
 
         const submissions = await prisma.submission.findMany({
             where: { userId, questionId: questionId.toString() },
@@ -230,4 +239,3 @@ const getQuestionSubmissions = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
-export {getQuestionSubmissions, getAllQuestions, getQuestionBySlug, submitCode, getUserSubmissions };

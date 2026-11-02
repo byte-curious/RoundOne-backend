@@ -1,19 +1,15 @@
-import { runInDocker } from "./dockerRunner.js";
-import {z} from "zod"
-import {TestCaseSchema} from "../zod/index.js"
-type TestCase = z.infer<typeof TestCaseSchema>
+import { executeNative } from "./nativeRunner.js";
+import { z } from "zod";
+import { TestCaseSchema } from "../zod/index.js";
 
-type Verdict = "AC" | "WA" | "TLE" | "MLE" | "RTE"
+type TestCase = z.infer<typeof TestCaseSchema>;
+type Verdict = "AC" | "WA" | "TLE" | "MLE" | "RTE" | "CE";
 
 interface TestCaseResult {
   verdict: Verdict;
   stdout: string;
   stderr: string;
-  expectedOutput: string
-}
-interface JudgeResult {
-  overAllVerdict: Verdict | "AC";
-  results: TestCaseResult[];
+  expectedOutput: string;
 }
 
 export async function runTestCases({
@@ -24,32 +20,30 @@ export async function runTestCases({
   code: string;
   language: string;
   testCases: TestCase[];
-}): Promise<JudgeResult> {
-  //   loop over testCases, call runInDocker for each with the right stdin,
+}) {
   const results: TestCaseResult[] = [];
   let overallVerdict: Verdict | "AC" = "AC";
 
-  for (const testcase of testCases) {
-    // apply the decision tree to produce a Verdict per test case,
-    const response = await runInDocker({ code, language, stdin: testcase.input });
-    let verdict: Verdict;
-    if (response.timedOut) {
-      verdict = "TLE"
-    }
-    else if (response.oomKilled) {
-      verdict = "MLE"
-    }
-    else if (response.exitCode !== 0) {
-      verdict = "RTE"
-    }
-    else if (response.exitCode == 0 && response.stdout.trim() !== testcase.expectedOutput.trim()) {
-      verdict = "WA"
+  for (const tc of testCases) {
+    const res = await executeNative(language, code, tc.input);
+
+    let verdict: Verdict = "AC";
+
+    if (res.timedOut) {
+      verdict = "TLE";
+    } else if (res.exitCode !== 0) {
+      verdict = res.stderr.toLowerCase().includes("compilation") ? "CE" : "RTE";
+    } else if (res.stdout.trim() !== tc.expectedOutput.trim()) {
+      verdict = "WA";
     } else {
-      verdict = "AC"
-    };
+      verdict = "AC";
+    }
+
     results.push({
       verdict,
-      stdout: response.stdout, stderr: response.stderr, expectedOutput: testcase.expectedOutput
+      stdout: res.stdout,
+      stderr: res.stderr,
+      expectedOutput: tc.expectedOutput,
     });
 
     if (overallVerdict === "AC" && verdict !== "AC") {
@@ -57,9 +51,6 @@ export async function runTestCases({
       break;
     }
   }
-  return {
-    overAllVerdict: overallVerdict,
-    results
-  }
 
+  return { overAllVerdict: overallVerdict, results };
 }

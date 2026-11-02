@@ -1,11 +1,10 @@
-import z from "zod"
-import { languageConfigs } from "../config/languages.js";
+import z from "zod";
 
 const UserSchema = z.object({
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(6, "minimum password size is 6").max(15, "maximum password size is 15")
-})
+});
 
 const sendOTP = z.object({
     otp: z.string(),
@@ -23,7 +22,7 @@ const LoginSchema = z.object({
 
 const InterviewStart = z.object({
     company: z.string(), role: z.string(), level: z.string(), language: z.string()
-})
+});
 
 const EvaluateInterview = z.object({
     round: z.string(),
@@ -31,7 +30,8 @@ const EvaluateInterview = z.object({
     answer: z.string(),
     company: z.string(),
     spokenApproach: z.string().optional()
-})
+});
+
 const TTSRequestSchema = z.object({
     text: z.string().min(1, "Text is required"),
     voice: z.string().default("en-IN-NeerjaNeural"),
@@ -39,7 +39,8 @@ const TTSRequestSchema = z.object({
     pitch: z.string().default("+0Hz"),
 });
 
-const supportedLanguages = Object.keys(languageConfigs) as [string, ...string[]];
+export const supportedLanguages = ["python", "javascript", "cpp", "c", "java"] as const;
+
 
 
 const TestCaseSchema = z.object({
@@ -49,7 +50,7 @@ const TestCaseSchema = z.object({
 const ExecuteSchema = z.object({
     code: z.string().trim().min(1, "code cannot be empty"),
     language: z.enum(supportedLanguages),
-    
+
     testCases: z.array(TestCaseSchema).min(1, "at least 1 test case is required")
 });
 export type TestCase = z.infer<typeof TestCaseSchema>;
@@ -73,6 +74,6 @@ const SubmitCodeSchema = z.object({
 const BulletWriter = z.object({
     techStack: z.string(),
     brainDump: z.string(),
-    userFeedback : z.string().optional()
+    userFeedback: z.string().optional()
 })
-export {BulletWriter, SubmitCodeSchema, PracticeSubmissionSchema, ExecuteSchema, TestCaseSchema, supportedLanguages, sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }
+export { BulletWriter, SubmitCodeSchema, PracticeSubmissionSchema, ExecuteSchema, TestCaseSchema, sendOTP, resendOTP, UserSchema, LoginSchema, InterviewStart, EvaluateInterview, TTSRequestSchema }
