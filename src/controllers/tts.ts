@@ -2,6 +2,16 @@ import type { Request, Response } from "express";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
 import { TTSRequestSchema } from "../zod/index.js";
 
+let sharedTTS : MsEdgeTTS| null = null;
+
+async function getTTSInstance(voice = "en-IN-NeerjaNeural") {
+  if (!sharedTTS) {
+    sharedTTS = new MsEdgeTTS();
+    await sharedTTS.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  }
+  return sharedTTS;
+}
+
 export const generateTTS = async (req: Request, res: Response): Promise<any> => {
   try {
     const { text, pitch, rate, voice } = req.body;
@@ -11,11 +21,7 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
       return res.status(400).json({ error: response.error.issues });
     }
 
-    const tts = new MsEdgeTTS();
-    await tts.setMetadata(
-      voice || "en-IN-NeerjaNeural",
-      OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3
-    );
+    const tts = await getTTSInstance(voice);
 
     // 1. Generate audio stream
     const rawResult: any = await tts.toStream(response.data.text);

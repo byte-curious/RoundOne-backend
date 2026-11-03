@@ -34,9 +34,11 @@ const startInterview = async (req: Request, res: Response) => {
         const dsaPrompt = buildDSAPrompt({ company, level, language })
 
         // 2. Call Gemini for each
-        const hrRaw = await callGemini(hrPrompt)
-        const technicalRaw = await callGemini(technicalPrompt)
-        const dsaRaw = await callGemini(dsaPrompt)
+        const [hrRaw, technicalRaw, dsaRaw]  = await Promise.all([
+            callGemini(hrPrompt),
+            callGemini(technicalPrompt),
+            callGemini(dsaPrompt)
+        ]);
 
         // 3. Null checks
         if (!hrRaw || !technicalRaw || !dsaRaw) {
