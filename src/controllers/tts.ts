@@ -17,47 +17,74 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
       OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3
     );
 
-    // 1. Await the stream generation
-    let rawResult: any = await tts.toStream(response.data.text);
+    // 1. Generate audio stream
+    const rawResult: any = await tts.toStream(response.data.text);
 
-    // Extract stream if wrapped inside an object
-    const stream = rawResult?.stream || rawResult?.readable || rawResult;
+    console.log("TTS RAW RESULT TYPE:", typeof rawResult, rawResult?.constructor?.name);
+    console.log("TTS RAW RESULT KEYS:", Object.keys(rawResult || {}));
+
+    // Find the stream or buffer target
+    const target = rawResult?.audioStream 
+                || rawResult?.stream 
+                || rawResult?.data 
+                || rawResult?.readable 
+                || rawResult;
 
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    // 2. Case A: Web Streams API (getReader)
-    if (stream && typeof stream.getReader === "function") {
-      const reader = stream.getReader();
+    // Case 1: Binary Buffer / Uint8Array
+    if (Buffer.isBuffer(target) || target instanceof Uint8Array) {
+      return res.send(Buffer.from(target));
+    }
+
+    // Case 2: Classic Pipeable Stream
+    if (typeof target.pipe === "function") {
+      target.on("error", (err: any) => console.error("Pipe error:", err));
+      return target.pipe(res);
+    }
+
+    // Case 3: EventEmitter Stream (.on('data'))
+    if (typeof target.on === "function") {
+      target.on("data", (chunk: any) => {
+        res.write(chunk);
+      });
+      target.on("end", () => {
+        res.end();
+      });
+      target.on("close", () => {
+        res.end();
+      });
+      target.on("error", (err: any) => {
+        console.error("EventEmitter error:", err);
+        if (!res.headersSent) res.status(500).json({ error: "TTS Audio error" });
+      });
+      return;
+    }
+
+    // Case 4: Web Streams Reader (getReader)
+    if (typeof target.getReader === "function") {
+      const reader = target.getReader();
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         res.write(value);
       }
-      res.end();
-      return;
+      return res.end();
     }
 
-    // 3. Case B: Classic Node Stream (pipe)
-    if (stream && typeof stream.pipe === "function") {
-      stream.on("error", (err: any) => {
-        console.error("Stream piping error:", err);
-        if (!res.headersSent) res.status(500).json({ error: "TTS Stream Error" });
-      });
-      stream.pipe(res);
-      return;
-    }
-
-    // 4. Case C: Async Iterable (for await)
-    if (stream && Symbol.asyncIterator in Object(stream)) {
-      for await (const chunk of stream) {
+    // Case 5: Async Iterable (for await)
+    if (Symbol.asyncIterator in Object(target)) {
+      for await (const chunk of target) {
         res.write(chunk);
       }
-      res.end();
-      return;
+      return res.end();
     }
 
-    throw new Error(`Unrecognized stream format: ${typeof stream}`);
+    console.error("Could not find suitable consumer for target:", target);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "TTS Stream format error" });
+    }
 
   } catch (error) {
     console.error("TTS Generation Error:", error);
