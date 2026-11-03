@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import { Readable } from "node:stream";
 import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
 import { TTSRequestSchema } from "../zod/index.js";
 
@@ -18,31 +17,48 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
       OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3
     );
 
-    const rawStream: any = tts.toStream(response.data.text);
+    // 1. Await the stream generation
+    let rawResult: any = await tts.toStream(response.data.text);
 
-    // Convert WebStream to Node.js Readable stream
-    let nodeStream: Readable;
-    if (typeof rawStream.pipe === "function") {
-      nodeStream = rawStream;
-    } else if (typeof rawStream.getReader === "function") {
-      nodeStream = Readable.fromWeb(rawStream);
-    } else if (rawStream && typeof rawStream.readable?.getReader === "function") {
-      nodeStream = Readable.fromWeb(rawStream.readable);
-    } else {
-      nodeStream = Readable.from(rawStream);
-    }
+    // Extract stream if wrapped inside an object
+    const stream = rawResult?.stream || rawResult?.readable || rawResult;
 
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    nodeStream.on("error", (err) => {
-      console.error("Audio stream error:", err);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "TTS streaming error" });
+    // 2. Case A: Web Streams API (getReader)
+    if (stream && typeof stream.getReader === "function") {
+      const reader = stream.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        res.write(value);
       }
-    });
+      res.end();
+      return;
+    }
 
-    nodeStream.pipe(res);
+    // 3. Case B: Classic Node Stream (pipe)
+    if (stream && typeof stream.pipe === "function") {
+      stream.on("error", (err: any) => {
+        console.error("Stream piping error:", err);
+        if (!res.headersSent) res.status(500).json({ error: "TTS Stream Error" });
+      });
+      stream.pipe(res);
+      return;
+    }
+
+    // 4. Case C: Async Iterable (for await)
+    if (stream && Symbol.asyncIterator in Object(stream)) {
+      for await (const chunk of stream) {
+        res.write(chunk);
+      }
+      res.end();
+      return;
+    }
+
+    throw new Error(`Unrecognized stream format: ${typeof stream}`);
+
   } catch (error) {
     console.error("TTS Generation Error:", error);
     if (!res.headersSent) {
