@@ -12,11 +12,26 @@ export const generateTTS = async (req: Request, res: Response): Promise<any> => 
     }
 
     const tts = new MsEdgeTTS();
-    await tts.setMetadata(voice || "en-IN-NeerjaNeural", OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    await tts.setMetadata(
+      voice || "en-IN-NeerjaNeural", 
+      OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3
+    );
 
-    const readableStream = tts.toStream(response.data.text) as any;
+    // Call toStream without destructuring
+    const audioStream: any = await tts.toStream(response.data.text);
+
     res.setHeader("Content-Type", "audio/mpeg");
-    readableStream.pipe(res);
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    audioStream.on("error", (streamErr: any) => {
+      console.error("TTS Stream Error:", streamErr);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Stream error occurred" });
+      }
+    });
+
+    audioStream.pipe(res);
+
   } catch (error) {
     console.error("TTS Generation Error:", error);
     if (!res.headersSent) {
